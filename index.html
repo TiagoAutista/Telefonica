@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KOF - Painel de Atendimento</title>
+
+    <!-- Fontes e estilos -->
+    <link rel="stylesheet" href="./assets/css/rpgui.css" type="text/css">
+    <link rel="stylesheet" href="./assets/css/style.css" type="text/css">
+    <link rel="stylesheet" href="./assets/css/new.css" type="text/css">
+    <link rel="stylesheet" href="./assets/css/footer.css" type="text/css">
+</head>
+
+<body>
+    <div class="rpg-ui">
+        <div class="rpgui-content">
+            <!-- ==============================
+            CABEÇALHO: MENUS PRINCIPAIS
+            =============================== -->
+            <header>
+                <!-- Menu principal (Team Select) -->
+                <nav class="rpgui-container framed " style="height: 120px; width: 80%; top: 0; left: 10%;">
+                    <div class="rpgui-nav-title">TEAM SELECT</div>
+                    <ul class="rpgui-nav-list">
+                        <li class="rpgui-nav-item"><a class="active" href="/index.html">HOME</a></li>
+                        <li class="rpgui-nav-item"><a href="#">SOBRE</a></li>
+                        <li class="rpgui-nav-item"><a href="#">PROJETO</a></li>
+                        <li class="rpgui-nav-item"><a href="#">ACESSOS</a></li>
+                        <li class="rpgui-nav-item"><a href="#">TELEFÔNICA</a></li>
+                    </ul>
+                </nav>
+                <!-- Segunda barra: Links rápidos (estilo "Quick Access - Arcade") -->
+                <nav class="rpgui-container framed " style="height:160px; width:80%; top: 20%; left: 10%;">
+                    <div class="rpgui-nav-title">QUICK ACCESS - ARCADE MODE</div>
+                    <ul class="rpgui-nav-list">
+                        <li class="rpgui-nav-item rpgui-dropdown">
+                            <a href="#">INFORMADAS</a>
+                            <ul class="rpgui-dropdown-menu">
+                                <li><a href="./assets/pages/saturadas/FTTH.html" target="_blank">FTTH</a></li>
+                                <li><a href="./assets/pages/saturadas/FTTA.html" target="_blank">FTTA</a></li>
+                            </ul>
+                        </li>
+                        <li class="rpgui-nav-item"><a href="https://rhtelefonica.zendesk.com/hc/pt-br"
+                                target="_blank">VIVO PESSOAS</a></li>
+                        <li class="rpgui-nav-item"><a href="https://vivowfm.redecorp.br/wfm/login?logout=true"
+                                target="_blank">NICE</a></li>
+                        <li class="rpgui-nav-item"><a href="https://outlook.office.com/mail/"
+                                target="_blank">OUTLOOK</a></li>
+                        <li class="rpgui-nav-item"><a
+                                href="https://conexaopessoas.vivo.com.br/sap/bc/ui5_ui5/ui2/ushell/shells/abap/Fiorilaunchpad.html#Shell-home"
+                                target="_blank">CONEXÃO PESSOAS</a></li>
+                        <li class="rpgui-nav-item"><a href="https://intranet.telefonica.com.br/noticias"
+                                target="_blank">INTRANET</a></li>
+                        <li class="rpgui-nav-item"><a href="https://beneficios.vivo.com.br/vibe/#/"
+                                target="_blank">VIBE</a></li>
+                        <li class="rpgui-nav-item"><a href="https://performancemanager5.successfactors.eu/sf/home"
+                                target="_blank">SUCCESS FACTORS</a></li>
+                        <li class="rpgui-nav-item"><a href="https://www.academiav.com.br/login.html"
+                                target="_blank">ACADEMIA V</a></li>
+                    </ul>
+                </nav>
+            </header>
+            <!-- ==============================
+            CORPO PRINCIPAL: ARENA DE ATENDIMENTO
+            =============================== -->
+            <main class="rpgui-container framed " style="height:3000px; width:80%; top: 45%; left: 10%;">
+                <!-- Painel de Status do Personagem (Avatar) -->
+                <section>
+                    <div class="character-dashboard">
+                        <!-- Avatar -->
+                        <div class="character-frame">
+                            <div class="rpgui-container framed ">
+                                <h2 class="rpgui-title">AVATAR</h2>
+                                <img class="avatar-img" src="./assets/img/rachel-stance.gif" alt="Tech Fighter" />
+                            </div>
+                        </div>
+                        <div class="character-frame">
+                            <div class="rpgui-container framed">
+                                <div class="rpgui-barprogress">
+                                    <h2 class="rpgui-title">STATUS & CONTROLS</h2>
+                                    <p>RPGUI progress bars with live controls</p>
+                                    <hr />
+                                    <div>
+                                        <!-- PRODUTIVIDADE -->
+                                        <label id="produtividade-text">PRODUTIVIDADE: 900</label>
+                                        <div class="progress-container">
+                                            <div id="produtividade-bar" class="rpgui-progress red" data-value="0.9">
+                                            </div>
+                                            <span class="hp-label" id="produtividade-label">90%</span>
+                                        </div>
+                                        <button
+                                            onclick="HPSystem.setProdutividade(HPSystem.getProdutividade() - 1)">-</button>
+                                        <button
+                                            onclick="HPSystem.setProdutividade(HPSystem.getProdutividade() + 1)">+</button>
+                                    </div>
+                                    <div>
+                                        <!-- ADERÊNCIA -->
+                                        <label id="aderencia-text">ADERÊNCIA: 900</label>
+                                        <div class="progress-container">
+                                            <div id="aderencia-bar" class="rpgui-progress blue" data-value="0.9"></div>
+                                            <span class="hp-label" id="aderencia-label">90%</span>
+                                        </div>
+                                        <button onclick="HPSystem.setAderencia(HPSystem.getAderencia() - 1)">-</button>
+                                        <button onclick="HPSystem.setAderencia(HPSystem.getAderencia() + 1)">+</button>
+                                    </div>
+                                    <div>
+                                        <!-- ASSIDUIDADE -->
+                                        <label id="assiduidade-text">ASSIDUIDADE: 900</label>
+                                        <div class="progress-container">
+                                            <div id="assiduidade-bar" class="rpgui-progress purple" data-value="0.9">
+                                            </div>
+                                            <span class="hp-label" id="assiduidade-label">90%</span>
+                                        </div>
+                                        <button
+                                            onclick="HPSystem.setAssiduidade(HPSystem.getAssiduidade() - 1)">-</button>
+                                        <button
+                                            onclick="HPSystem.setAssiduidade(HPSystem.getAssiduidade() + 1)">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+                <!--  -->
+                <!--  -->
+                <section>
+                    <div class="character-frame">
+                        <div class="nav-container framed">
+                            <h2 class="rpgui-title">MENU</h2>
+                            <nav class="navegacao">
+                                <ul class="navigation-menu" style="list-style-type: none; padding: 0;">
+                                    <li class="back-to-clock" style="margin: 10px 0;">
+                                        <a onclick="scrollToClock()" class="rpgui-button">RELOGIO</a>
+                                    </li>
+                                    <li style="margin: 10px 0;">
+                                        <a class="rpgui-button" href="#sobre">Sobre</a>
+                                    </li>
+                                    <li style="margin: 10px 0;">
+                                        <a class="rpgui-button" href="#servicos">Serviços</a>
+                                    </li>
+                                    <li style="margin: 10px 0;">
+                                        <a class="rpgui-button" href="#contato">Contato</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </section>
+                <!--  -->
+                <!-- Seleção de Modo de Atendimento -->
+                <section class="rpgui-container framed " style="margin-top: 25px;">
+                    <h2 class="rpgui-title">SELECT YOUR FIGHTER</h2>
+                    <div class="rpgui-section">
+                        <div class="rpgui-col">
+                            <div class="rpgui-input-group">
+                                <label class="rpgui-label">Pon Next</label>
+                                <input type="text" class="rpgui-input" id="filter-pon-next"
+                                    placeholder="ENTER CODE..." />
+                                <button class="rpgui-button" onclick="abrirAtendimentoNext()">NEXT BATTLE</button>
+                            </div>
+                        </div>
+                        <div class="rpgui-col">
+                            <div class="rpgui-input-group">
+                                <label class="rpgui-label">Pon Siebel</label>
+                                <input type="text" class="rpgui-input" id="filter-pon-siebel"
+                                    placeholder="ENTER CODE..." />
+                                <button class="rpgui-button" onclick="abrirAtendimentoSiebel()">SIEBEL MODE</button>
+                            </div>
+                        </div>
+                        <div class="rpgui-col">
+                            <div class="rpgui-input-group">
+                                <label class="rpgui-label">WFM</label>
+                                <input type="text" class="rpgui-input" id="filter-pon-WFM"
+                                    placeholder="ENTER CODE..." />
+                                <button class="rpgui-button" onclick="abrirAtendimentoWFM()">WFM ARENA</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rpgui-footer">
+                        <div class="rpgui-button golden rpgui-button-close" type="button" style="width: 75%;"
+                            onclick="fecharLinks()">
+                            <p style="padding-top: 15px;">ABORT MISSION</p>
+                        </div>
+                    </div>
+                </section>
+                <!--  -->
+                <!-- relogio -->
+                <section id="relogio" class="rpgui-container framed" style="margin-top: 25px;">
+                    <h2 class="rpgui-title">RELOGIO</h2>
+                    <div class="rpgui-section">
+                        <div id="clock" style="font-size: 24px; font-weight: bold;"></div>
+                    </div>
+                </section>
+                <!--  -->
+                <!--  -->
+                <section class="rpgui-container framed" style="margin-top: 25px;">
+                    <h2 class="rpgui-title">SELECT YOUR FIGHTER</h2>
+                    <div class="rpgui-section">
+                    </div>
+                </section>
+                <!--  -->
+                <!--  -->
+                <section class="rpgui-container framed">
+                    <h2 class="rpgui-title">Possibilidade de Reversão</h2>
+                    <div class="rpgui-section">
+                        <input type="text" id="pon" class="input-field" placeholder="Pon">
+                        <input type="text" id="cluster" class="input-field" placeholder="Cluster">
+                        <input type="text" id="informada" class="input-field" placeholder="Solicitação Informada">
+                        <input type="text" id="motivo" class="input-field" placeholder="Motivo">
+                        <input type="text" id="obs" class="input-field" placeholder="Observações">
+                        <input type="text" id="facilidade" class="input-field"
+                            placeholder="Possibilidade de Facilidade">                       
+                        <div class="rpgui-sm">
+                            <button class="rpgui-button" onclick="gerarDescricao()">Descrição</button>
+                            <button class="rpgui-button" onclick="copiarDescricao()">Copiar Descrição</button>
+                        </div>
+                </section>
+                <!--  -->
+                <!--  -->
+                <section class="rpgui-container framed " style="margin-top: 25px;">
+                    <h2 class="rpgui-title">Ocorrencia ShortCall</h2>
+                    <div class="rpgui-section">
+                        <input type="text" id="matricula" class="rpgui-input" placeholder="Matrícula">
+                        <input type="text" id="numeroCliente" class="rpgui-input" placeholder="Número do Cliente">
+                        <input type="text" id="direcaoChamada" class="rpgui-input"
+                            placeholder="Direção da Chamada (ativa/receptiva)">
+                        <input type="text" id="horarioChamada" class="rpgui-input" placeholder="Horário da Chamada">
+                        <input type="text" id="motivoCliente" class="rpgui-input" placeholder="Motivo">
+                        <div class="rpgui-sm">
+                            <button class="rpgui-button" onclick="gerarRegistro()">Gerar Registro</button>
+                            <button class="rpgui-button" onclick="copiarRegistro()">Copiar Registro</button>
+                        </div>
+                    </div>
+                </section>
+                <!--  -->
+                <!--  -->
+                <section class="rpgui-container framed">
+                    <h2 class="rpgui-title">Ocorrência ShortCall</h2>
+                    <div class="rpgui-section"></div>
+                </section>
+                <!--  -->
+            </main>
+            <!-- ==============================
+                        RODAPÉ
+            =============================== -->
+            <div class="back-to-top" style="position: fixed; bottom: 20px; right: 20px; display: none;">
+                <button onclick="scrollToTop()" class="rpgui-button">Topo</button>
+            </div>
+            <!-- ==============================
+                        RODAPÉ
+            =============================== -->
+            <footer style="text-align: center; margin-top: 50px; font-size: 0.8em; color: #aaa;">
+                © 2025 KING OF FIGHTERS - TELEFÔNICA OPERATIONS
+            </footer>
+        </div>
+    </div>
+    <!-- ==============================
+       OVERLAY: SUPER ATAQUE (opcional)
+    =============================== -->
+    <div id="superAttackOverlay" class="super-attack-overlay">
+        <img src="./assets/img/aba-super.gif" class="super-attack-gif" alt="SUPER ATTACK!" />
+    </div>
+    <!-- ==============================
+       SCRIPTS
+    =============================== -->
+    <script src="./assets/js/rpgui.js"></script>
+    <script src="./assets/js/main.js"></script>
+
+    <script>
+        const HPSystem = (function () {
+            const maxHP = 1000;
+            const STORAGE_KEYS = {
+                produtividade: 'produtividade-hp',
+                aderencia: 'aderencia-hp',
+                assiduidade: 'assiduidade-hp'
+            };
+
+            // Carrega os HPs salvos ou usa 900 como padrão
+            let currentStatus = {
+                produtividade: loadHP(STORAGE_KEYS.produtividade),
+                aderencia: loadHP(STORAGE_KEYS.aderencia),
+                assiduidade: loadHP(STORAGE_KEYS.assiduidade)
+            };
+
+            function loadHP(key) {
+                const saved = localStorage.getItem(key);
+                if (saved !== null) {
+                    const parsed = parseInt(saved, 10);
+                    return isNaN(parsed) ? 900 : Math.max(0, Math.min(maxHP, parsed));
+                }
+                return 900; // valor inicial padrão
+            }
+
+            // Atualiza e renderiza o status de cada métrica
+            function render() {
+                for (let key in currentStatus) {
+                    const percent = Math.round((currentStatus[key] / maxHP) * 100);
+                    const ratio = Math.min(1, Math.max(0, currentStatus[key] / maxHP));
+
+                    document.getElementById(`${key}-text`).textContent = `${key.toUpperCase()}: ${currentStatus[key]}`;
+                    document.getElementById(`${key}-label`).textContent = `${percent}%`;
+                    if (window.RPGUI) RPGUI.set_value(document.getElementById(`${key}-bar`), ratio);
+                }
+            }
+
+            function setHP(key, newHP) {
+                const oldHP = currentStatus[key];
+                currentStatus[key] = Math.max(0, Math.min(maxHP, newHP));
+
+                // Salva no localStorage sempre que muda
+                localStorage.setItem(STORAGE_KEYS[key], currentStatus[key].toString());
+
+                if (currentStatus[key] < oldHP) {
+                    console.log(`💥 Dano recebido em ${key}: ${oldHP - currentStatus[key]} HP`);
+                } else if (currentStatus[key] > oldHP) {
+                    console.log(`✨ Cura recebida em ${key}: ${currentStatus[key] - oldHP} HP`);
+                }
+
+                render();
+            }
+
+            function getHP(key) {
+                return currentStatus[key];
+            }
+
+            // Métodos públicos para manipular cada métrica
+            return {
+                setProdutividade: (newHP) => setHP('produtividade', newHP),
+                getProdutividade: () => getHP('produtividade'),
+                setAderencia: (newHP) => setHP('aderencia', newHP),
+                getAderencia: () => getHP('aderencia'),
+                setAssiduidade: (newHP) => setHP('assiduidade', newHP),
+                getAssiduidade: () => getHP('assiduidade', newHP),
+                render // Para renderizar no início
+            };
+        })();
+
+        // Renderiza o estado carregado
+        HPSystem.render();
+    </script>
+
+</body>
+
+</html>
