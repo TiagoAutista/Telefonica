@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV para JSON</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #result {
+            margin-top: 20px;
+            white-space: pre-wrap; /* Preserva os espaços em branco no JSON */
+            background: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-x: auto; /* Permite scroll horizontal caso o JSON seja muito longo */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Converter CSV para JSON</h1>
+    <input type="file" id="csvFileInput" accept=".csv" />
+    <button id="convertButton">Converter</button>
+
+    <h2>Resultado:</h2>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('convertButton').addEventListener('click', function() {
+            const fileInput = document.getElementById('csvFileInput');
+
+            if (fileInput.files.length === 0) {
+                alert('Por favor, selecione um arquivo CSV.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+
+            Papa.parse(file, {
+                header: true,
+                complete: function(results) {
+                    // Exibir o JSON resultante no div "result"
+                    document.getElementById('result').innerText = JSON.stringify(results.data, null, 2);
+                },
+                error: function(error) {
+                    alert('Erro ao processar o arquivo: ' + error.message);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
