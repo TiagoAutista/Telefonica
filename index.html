@@ -84,44 +84,21 @@
                                     <hr />
                                     <div>
                                         <!-- PRODUTIVIDADE -->
-                                        <label id="produtividade-text">PRODUTIVIDADE: 900</label>
-                                        <div class="progress-container">
-                                            <div id="produtividade-bar" class="rpgui-progress red" data-value="0.9">
+                                        <label id="produtividade-text">PRODUTIVIDADE: </label>
+                                        <div class="progress-container">                                            
+                                            <div id="produtividade-bar" class="" style="width: 0%;"
+                                                data-value="0">
+                                                <span class="produtividade-value">0</span>
+                                                <!-- Elemento para mostrar a produtividade já tratada -->
                                             </div>
-                                            <span class="hp-label" id="produtividade-label">90%</span>
+                                            <span class="hp-label" id="produtividade-label">0%</span>
                                         </div>
-                                        <button
-                                            onclick="HPSystem.setProdutividade(HPSystem.getProdutividade() - 1)">-</button>
-                                        <button
-                                            onclick="HPSystem.setProdutividade(HPSystem.getProdutividade() + 1)">+</button>
-                                    </div>
-                                    <div>
-                                        <!-- ADERÊNCIA -->
-                                        <label id="aderencia-text">ADERÊNCIA: 900</label>
-                                        <div class="progress-container">
-                                            <div id="aderencia-bar" class="rpgui-progress blue" data-value="0.9"></div>
-                                            <span class="hp-label" id="aderencia-label">90%</span>
-                                        </div>
-                                        <button onclick="HPSystem.setAderencia(HPSystem.getAderencia() - 1)">-</button>
-                                        <button onclick="HPSystem.setAderencia(HPSystem.getAderencia() + 1)">+</button>
-                                    </div>
-                                    <div>
-                                        <!-- ASSIDUIDADE -->
-                                        <label id="assiduidade-text">ASSIDUIDADE: 900</label>
-                                        <div class="progress-container">
-                                            <div id="assiduidade-bar" class="rpgui-progress purple" data-value="0.9">
-                                            </div>
-                                            <span class="hp-label" id="assiduidade-label">90%</span>
-                                        </div>
-                                        <button
-                                            onclick="HPSystem.setAssiduidade(HPSystem.getAssiduidade() - 1)">-</button>
-                                        <button
-                                            onclick="HPSystem.setAssiduidade(HPSystem.getAssiduidade() + 1)">+</button>
+                                        <div id="ordens-feitas-label">Ordens Feitas: 0</div>
+                                        <!-- Elemento para mostrar ordens feitas -->
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </section>
                 <!--  -->
@@ -207,16 +184,16 @@
                 <section class="rpgui-container framed">
                     <h2 class="rpgui-title">Possibilidade de Reversão</h2>
                     <div class="rpgui-section">
-                        <input type="text" id="pon" class="input-field" placeholder="Pon">
-                        <input type="text" id="cluster" class="input-field" placeholder="Cluster">
-                        <input type="text" id="informada" class="input-field" placeholder="Solicitação Informada">
-                        <input type="text" id="motivo" class="input-field" placeholder="Motivo">
-                        <input type="text" id="obs" class="input-field" placeholder="Observações">
-                        <input type="text" id="facilidade" class="input-field"
-                            placeholder="Possibilidade de Facilidade">                       
+                        <input id="pon" type="text" placeholder="Pon">
+                        <input id="cluster" type="text" placeholder="Cluster">
+                        <input id="informada" type="text" placeholder="Informada">
+                        <input id="motivo" type="text" placeholder="Motivo">
+                        <input id="obs" type="text" placeholder="Observação">
+                        <input id="facilidade" type="text" placeholder="Facilidade">
                         <div class="rpgui-sm">
-                            <button class="rpgui-button" onclick="gerarDescricao()">Descrição</button>
+                            <button class="rpgui-button" onclick="gerarDescricao()">Gerar Descrição</button>
                             <button class="rpgui-button" onclick="copiarDescricao()">Copiar Descrição</button>
+                            <div id="output"></div>
                         </div>
                 </section>
                 <!--  -->
@@ -271,76 +248,46 @@
     <script src="./assets/js/main.js"></script>
 
     <script>
-        const HPSystem = (function () {
-            const maxHP = 1000;
-            const STORAGE_KEYS = {
-                produtividade: 'produtividade-hp',
-                aderencia: 'aderencia-hp',
-                assiduidade: 'assiduidade-hp'
-            };
+        let ordensFeitas = 0;
+        const produtividadeMaxima = 1200;
 
-            // Carrega os HPs salvos ou usa 900 como padrão
-            let currentStatus = {
-                produtividade: loadHP(STORAGE_KEYS.produtividade),
-                aderencia: loadHP(STORAGE_KEYS.aderencia),
-                assiduidade: loadHP(STORAGE_KEYS.assiduidade)
-            };
+        function atualizarProdutividade(pons) {
+            const produtividadeLabel = document.getElementById("produtividade-label");
+            const produtividadeBar = document.getElementById("produtividade-bar");
+            const ordensFeitasLabel = document.getElementById("ordens-feitas-label");
+            const produtividadeValor = document.querySelector("#produtividade-bar .produtividade-value");
 
-            function loadHP(key) {
-                const saved = localStorage.getItem(key);
-                if (saved !== null) {
-                    const parsed = parseInt(saved, 10);
-                    return isNaN(parsed) ? 900 : Math.max(0, Math.min(maxHP, parsed));
+            ordensFeitas = pons.length; // Contagem de ordens feitas
+            const produtividadeObtida = ordensFeitas * 0.8; // Produtividade obtida com base nas ordens
+            const porcentagemProdutividade = (produtividadeObtida / produtividadeMaxima) * 100; // Cálculo da porcentagem
+
+            console.log(`Número de PONS: ${ordensFeitas}, Produtividade Obtida: ${produtividadeObtida}, Porcentagem: ${porcentagemProdutividade}`);
+
+            // Atualizando a UI com a nova produtividade
+            produtividadeValor.innerText = `${produtividadeObtida.toFixed(1)}`; // Exibindo a produtividade tratada
+            produtividadeLabel.innerText = `${Math.round(porcentagemProdutividade)}%`;
+            produtividadeBar.style.width = `${Math.min(porcentagemProdutividade, 100)}%`; // Limitar a 100%
+            ordensFeitasLabel.innerText = `Ordens Feitas: ${ordensFeitas}`;
+        }
+
+        // Fazendo a requisição para o arquivo JSON
+        fetch('./assets/json/main.json') // Certifique-se de que o caminho está correto
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro na resposta da rede: ' + response.statusText);
                 }
-                return 900; // valor inicial padrão
-            }
-
-            // Atualiza e renderiza o status de cada métrica
-            function render() {
-                for (let key in currentStatus) {
-                    const percent = Math.round((currentStatus[key] / maxHP) * 100);
-                    const ratio = Math.min(1, Math.max(0, currentStatus[key] / maxHP));
-
-                    document.getElementById(`${key}-text`).textContent = `${key.toUpperCase()}: ${currentStatus[key]}`;
-                    document.getElementById(`${key}-label`).textContent = `${percent}%`;
-                    if (window.RPGUI) RPGUI.set_value(document.getElementById(`${key}-bar`), ratio);
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.pons) {
+                    atualizarProdutividade(data.pons); // Passa o array de PONS para a função
+                } else {
+                    console.error('Resposta inválida:', data);
                 }
-            }
-
-            function setHP(key, newHP) {
-                const oldHP = currentStatus[key];
-                currentStatus[key] = Math.max(0, Math.min(maxHP, newHP));
-
-                // Salva no localStorage sempre que muda
-                localStorage.setItem(STORAGE_KEYS[key], currentStatus[key].toString());
-
-                if (currentStatus[key] < oldHP) {
-                    console.log(`💥 Dano recebido em ${key}: ${oldHP - currentStatus[key]} HP`);
-                } else if (currentStatus[key] > oldHP) {
-                    console.log(`✨ Cura recebida em ${key}: ${currentStatus[key] - oldHP} HP`);
-                }
-
-                render();
-            }
-
-            function getHP(key) {
-                return currentStatus[key];
-            }
-
-            // Métodos públicos para manipular cada métrica
-            return {
-                setProdutividade: (newHP) => setHP('produtividade', newHP),
-                getProdutividade: () => getHP('produtividade'),
-                setAderencia: (newHP) => setHP('aderencia', newHP),
-                getAderencia: () => getHP('aderencia'),
-                setAssiduidade: (newHP) => setHP('assiduidade', newHP),
-                getAssiduidade: () => getHP('assiduidade', newHP),
-                render // Para renderizar no início
-            };
-        })();
-
-        // Renderiza o estado carregado
-        HPSystem.render();
+            })
+            .catch(error => {
+                console.error('Erro ao carregar o main.json:', error);
+            });
     </script>
 
 </body>
