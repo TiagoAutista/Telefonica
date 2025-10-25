@@ -479,17 +479,17 @@ function gerarDescricao() {
   const facilidade = document.getElementById("facilidade").value.trim();
 
   const descricao = `
-ORDEM NÃO INFORMADA:
-Pon: ${pon || "dados não informados"},
-Cluster: ${cluster || "dados não informados"},
-Solicitação da informada: ${informada || "dados não informados"},
-Motivo não informada: ${motivo || "dados não informados"},
-OBS: ${obs || "dados não informados"},
-POSSIBILIDADE DE FACILIDADE: ${facilidade || "dados não informados"}.
-Equipe deve acompanhar o andamento desta solicitação e garantir que as ações necessárias sejam realizadas de forma eficaz.
+ORDEM NÃO INFORMADA:<br>
+Pon: ${pon || "dados não informados"}<br>
+Cluster: ${cluster || "dados não informados"}<br>
+Solicitação da informada: ${informada || "dados não informados"}<br>
+Motivo não informada: ${motivo || "dados não informados"}<br>
+OBS: ${obs || "dados não informados"}<br>
+POSSIBILIDADE DE FACILIDADE: ${facilidade || "dados não informados"}<br><br>
+Foi orientado a escalonar sua gestão para interação e orientação no caso de não conseguir prosseguir com a informada.
 `;
 
-  document.getElementById("output").innerText = descricao;
+  document.getElementById("output").innerHTML = descricao; // Mudando para innerHTML para aceitar as quebras de linha
 }
 
 function copiarDescricao() {
