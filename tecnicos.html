@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <title>Cadastro de Técnicos</title>
+    <style>
+        .message-success {
+            color: green;
+            font-weight: bold;
+        }
+
+        .message-error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Cadastro de Técnicos</h1>
+        <form id="techForm" class="mb-3">
+            <div class="mb-3">
+                <label for="matricula" class="form-label">Matrícula:</label>
+                <input type="text" class="form-control" id="matricula" required>
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">Nome:</label>
+                <input type="text" class="form-control" id="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="telefone" class="form-label">Telefone:</label>
+                <input type="text" class="form-control" id="telefone" required>
+            </div>
+            <div class="mb-3">
+                <label for="specialty" class="form-label">Especialidade:</label>
+                <input type="text" class="form-control" id="specialty" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </form>
+        <button id="importBtn" class="btn btn-secondary mb-3">Importar Técnicos do JSON</button>
+        <button id="clearBtn" class="btn btn-danger mb-3">Limpar Dados</button>
+        <button id="exportBtn" class="btn btn-info mb-3">Exportar Dados como JSON</button>
+        <input type="text" class="form-control mb-3" id="search" placeholder="Buscar técnico..." oninput="searchTech()">
+        <ul id="techList" class="list-group"></ul>
+        <div id="message" class="mt-3"></div>
+    </div>
+
+    <script>
+        let techs = JSON.parse(localStorage.getItem('techs')) || [];
+
+        document.getElementById('techForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const matricula = document.getElementById('matricula').value.trim();
+            const name = document.getElementById('name').value.trim();
+            const telefone = document.getElementById('telefone').value.trim();
+            const specialty = document.getElementById('specialty').value.trim();
+
+            // Checar se já existe um técnico com a mesma matrícula
+            const exists = techs.some(tech => tech.matricula === matricula);
+
+            if (exists) {
+                displayMessage('Técnico já cadastrado!', 'error');
+                return;
+            }
+
+            const tech = { matricula, name, telefone, specialty };
+            techs.push(tech);
+
+            // Salvar no localStorage
+            localStorage.setItem('techs', JSON.stringify(techs));
+
+            document.getElementById('techForm').reset();
+            displayTechs();
+            displayMessage('Técnico cadastrado com sucesso!', 'success');
+        });
+
+        document.getElementById('importBtn').addEventListener('click', function () {
+            fetch('tecnicos.json')
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao carregar o arquivo JSON');
+                    return response.json();
+                })
+                .then(data => {
+                    const newTechs = data.filter(dataTech => !techs.some(tech => tech.matricula === dataTech.matricula));
+                    techs = [...techs, ...newTechs]; // Mesclar os dados sem duplicatas
+                    localStorage.setItem('techs', JSON.stringify(techs)); // Atualizar o localStorage
+                    displayTechs(); // Exibir os dados atualizados
+                    displayMessage('Técnicos importados com sucesso!', 'success');
+                })
+                .catch(error => {
+                    console.error(error);
+                    displayMessage('Erro ao importar os dados.', 'error');
+                });
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', function () {
+            // Limpar os dados do localStorage e do array
+            localStorage.removeItem('techs');
+            techs = [];
+            displayTechs();
+            displayMessage('Dados apagados com sucesso!', 'success');
+        });
+
+        document.getElementById('exportBtn').addEventListener('click', function () {
+            const dataStr = JSON.stringify(techs, null, 2); // Converter os dados em string JSON
+            const blob = new Blob([dataStr], { type: 'application/json' }); // Criar um Blob
+            const url = URL.createObjectURL(blob); // Criar uma URL para o Blob
+
+            // Criar um link para download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'tecnicos.json'; // Nome do arquivo
+            document.body.appendChild(a);
+            a.click(); // Simular um clique no link
+            document.body.removeChild(a);
+            displayMessage('Dados exportados com sucesso!', 'success');
+        });
+
+        function displayTechs(filteredTechs = techs) {
+            const techList = document.getElementById('techList');
+            techList.innerHTML = '';
+
+            filteredTechs.forEach(tech => {
+                const li = document.createElement('li');
+                li.textContent = `Matrícula: ${tech.matricula} - Nome: ${tech.name} - Telefone: ${tech.telefone} - Especialidade: ${tech.specialty}`;
+                li.classList.add('list-group-item');
+                techList.appendChild(li);
+            });
+        }
+
+        // Carregar técnicos ao abrir a página
+        document.addEventListener('DOMContentLoaded', displayTechs);
+
+        function searchTech() {
+            const query = document.getElementById('search').value.toLowerCase();
+            const filteredTechs = techs.filter(tech =>
+                tech.name.toLowerCase().includes(query) ||
+                tech.specialty.toLowerCase().includes(query) ||
+                tech.matricula.includes(query) || // Adicionando pesquisa por matrícula
+                tech.telefone.includes(query) // Adicionando pesquisa por telefone
+            );
+            displayTechs(filteredTechs);
+        }
+
+        function displayMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = message;
+            messageDiv.className = type === 'success' ? 'message message-success' : 'message message-error';
+        }
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
