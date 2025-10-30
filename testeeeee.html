@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KOF - Cadastro de Técnicos</title>
+    <!-- Fontes estilo Arcade -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@500;700&display=swap">
+    <!--  -->
+    <!-- Fontes e estilos -->
+    <link rel="stylesheet" href="./assets/css/rpgui.css" type="text/css">
+    <link rel="stylesheet" href="./assets/css/style.css" type="text/css">
+    <link rel="stylesheet" href="./assets/css/new.css" type="text/css">
+    <link rel="stylesheet" href="./assets/css/footer.css" type="text/css">
+
+    <style>
+        #techList {
+            background: rgb(0, 0, 0);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .tech-item {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tech-item:last-child {
+            border-bottom: none;
+        }
+
+        .tech-name {
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        .tech-details {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .tech-button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .tech-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <!--  -->
+</head>
+
+<body>
+    <div class="rpg-ui">
+        <div class="rpgui-content">
+            <!-- ==============================
+            CABEÇALHO: MENUS PRINCIPAIS
+            =============================== -->
+            <header>
+                <!-- Menu principal (Team Select) -->
+                <nav class="rpgui-container framed " style="height: 120px; width: 80%; top: 0; left: 10%;">
+                    <div class="rpgui-nav-title">TEAM SELECT</div>
+                    <ul class="rpgui-nav-list">
+                        <li class="rpgui-nav-item"><a class="active" href="/index.html">HOME</a></li>
+                        <li class="rpgui-nav-item"><a href="#">SOBRE</a></li>
+                        <li class="rpgui-nav-item"><a href="#">PROJETO</a></li>
+                        <li class="rpgui-nav-item"><a href="#">ACESSOS</a></li>
+                        <li class="rpgui-nav-item"><a href="#">TELEFÔNICA</a></li>
+                    </ul>
+                </nav>
+                <!-- Segunda barra: Links rápidos (estilo "Quick Access - Arcade") -->
+                <nav class="rpgui-container framed " style="height:160px; width:80%; top: 20%; left: 10%;">
+                    <div class="rpgui-nav-title">QUICK ACCESS - ARCADE MODE</div>
+                    <ul class="rpgui-nav-list">
+                        <li class="rpgui-nav-item rpgui-dropdown">
+                            <a href="#">INFORMADAS</a>
+                            <ul class="rpgui-dropdown-menu">
+                                <li><a href="./assets/pages/saturadas/FTTH.html" target="_blank">FTTH</a></li>
+                                <li><a href="./assets/pages/saturadas/FTTA.html" target="_blank">FTTA</a></li>
+                            </ul>
+                        </li>
+                        <li class="rpgui-nav-item"><a href="https://rhtelefonica.zendesk.com/hc/pt-br"
+                                target="_blank">VIVO PESSOAS</a></li>
+                        <li class="rpgui-nav-item"><a href="https://vivowfm.redecorp.br/wfm/login?logout=true"
+                                target="_blank">NICE</a></li>
+                        <li class="rpgui-nav-item"><a href="https://outlook.office.com/mail/"
+                                target="_blank">OUTLOOK</a></li>
+                        <li class="rpgui-nav-item"><a
+                                href="https://conexaopessoas.vivo.com.br/sap/bc/ui5_ui5/ui2/ushell/shells/abap/Fiorilaunchpad.html#Shell-home"
+                                target="_blank">CONEXÃO PESSOAS</a></li>
+                        <li class="rpgui-nav-item"><a href="https://intranet.telefonica.com.br/noticias"
+                                target="_blank">INTRANET</a></li>
+                        <li class="rpgui-nav-item"><a href="https://beneficios.vivo.com.br/vibe/#/"
+                                target="_blank">VIBE</a></li>
+                        <li class="rpgui-nav-item"><a href="https://performancemanager5.successfactors.eu/sf/home"
+                                target="_blank">SUCCESS FACTORS</a></li>
+                        <li class="rpgui-nav-item"><a href="https://www.academiav.com.br/login.html"
+                                target="_blank">ACADEMIA V</a></li>
+                    </ul>
+                </nav>
+            </header>
+            <!-- ==============================
+            CABEÇALHO: MENUS PRINCIPAIS
+            =============================== -->
+            <input type="file" id="fileImport" accept=".json" style="display: none;" />
+
+            <div class="main-ui">
+                <div class="main-content">
+                    <section>
+                        <div>
+                            <main class="rpgui-container framed "
+                                style="height:1000px; width:80%; top: 45%; left: 10%;">
+                                <section class="rpgui-container framed " style="margin-top: 25px;">
+                                    <h2 class="rpgui-title">CADASTRO DE TÉCNICOS</h2>
+                                    <div class="rpgui-section">
+                                        <div class="avatar-placeholder">
+                                            <img src="./assets/img/tech-fighter-kof.png" alt="Tech Fighter">
+                                        </div>
+                                        <form id="techForm">
+                                            <input type="text" class="main-input" id="matricula" placeholder="Matrícula"
+                                                required />
+                                            <input type="text" class="main-input" id="name" placeholder="Nome"
+                                                required />
+                                            <input type="text" class="main-input" id="telefone"
+                                                placeholder="Telefone (ex: (11) 99999-9999)" required />
+                                            <input type="text" class="main-input" id="specialty"
+                                                placeholder="Especialidade" required />
+                                            <button type="submit" class="main-button btn-cadastrar">Cadastrar</button>
+                                            <button type="button" id="cancelEditBtn" class="main-button"
+                                                style="display:none; background: linear-gradient(to bottom, #555, #333);">Cancelar</button>
+                                        </form>
+                                        <div style="margin-top: 25px; text-align: center;">
+                                            <button id="importBtn" class="main-button btn-importar">Importar do
+                                                JSON</button>
+                                            <button id="clearBtn" class="main-button btn-limpar">Limpar Dados</button>
+                                            <button id="exportBtn" class="main-button btn-exportar">Exportar
+                                                JSON</button>
+                                            <button id="toggleA11y" class="main-button"
+                                                style="margin-top:10px; font-size:0.85em; padding:6px 12px;">Modo
+                                                Acessível</button>
+                                        </div>
+                                        <div style="margin-top: 25px;">
+                                            <input type="text" class="main-input" id="search"
+                                                placeholder="Buscar técnico..." oninput="searchTech()" />
+                                        </div>
+                                        <section>
+                                            <table id="techList" role="list" aria-label="Lista de técnicos cadastrados">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Matrícula</th>
+                                                        <th>Nome</th>
+                                                        <th>Telefone</th>
+                                                        <th>Especialidade</th>
+                                                        <th>Ações</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Os dados aqui serão gerados dinamicamente via JavaScript -->
+                                                </tbody>
+                                            </table>
+                                        </section>
+                                        <div id="message" style="margin-top: 15px; min-height: 24px;"></div>
+                                        <div id="historicoLog"></div>
+                                    </div>
+                                </section>
+                            </main>
+                            <footer
+                                style="text-align: center; margin-top: 40px; font-size: 0.85em; color: #ccc; text-shadow: 0 0 4px black;">
+                                © 2025 KING OF FIGHTERS - TELEFÔNICA OPERATIONS
+                            </footer>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <script>
+                let techs = JSON.parse(localStorage.getItem('techs')) || [];
+                let editingMatricula = null;
+                let historico = JSON.parse(localStorage.getItem('techs_historico')) || [];
+                let backupInterval = null;
+
+                // =============== UTILITÁRIOS ===============
+                function validarTelefone(telefone) {
+                    const digits = telefone.replace(/\D/g, '');
+                    return digits.length === 10 || digits.length === 11;
+                }
+
+                function displayMessage(msg, type) {
+                    const el = document.getElementById('message');
+                    el.textContent = msg;
+                    el.className = type === 'success' ? 'message-success' : 'message-error';
+                }
+
+                function setLoading(button, isLoading, originalText) {
+                    if (isLoading) {
+                        button.classList.add('btn-loading');
+                        button.disabled = true;
+                        button.textContent = 'Aguarde...';
+                    } else {
+                        button.classList.remove('btn-loading');
+                        button.disabled = false;
+                        button.textContent = originalText;
+                    }
+                }
+
+                function resetForm() {
+                    document.getElementById('techForm').reset();
+                    editingMatricula = null;
+                    document.querySelector('#techForm .btn-cadastrar').textContent = 'Cadastrar';
+                    document.getElementById('cancelEditBtn').style.display = 'none';
+                }
+
+                // =============== HISTÓRICO ===============
+                function adicionarAoHistorico(acao) {
+                    const entrada = `${new Date().toLocaleTimeString()} - ${acao}`;
+                    historico.unshift(entrada);
+                    historico = historico.slice(0, 10);
+                    localStorage.setItem('techs_historico', JSON.stringify(historico));
+                    atualizarHistoricoUI();
+                }
+
+                function atualizarHistoricoUI() {
+                    const div = document.getElementById('historicoLog');
+                    div.innerHTML = '<strong>Últimas ações:</strong><br>' + (historico.length ? historico.join('<br>') : 'Nenhuma ação registrada.');
+                }
+
+                // =============== EXCLUSÃO ===============
+                function excluirTecnico(matricula) {
+                    if (!confirm(`Deseja excluir o técnico de matrícula ${matricula}?`)) return;
+                    techs = techs.filter(t => t.matricula !== matricula);
+                    localStorage.setItem('techs', JSON.stringify(techs));
+                    resetForm();
+                    displayTechs();
+                    displayMessage('Técnico excluído com sucesso!', 'success');
+                    adicionarAoHistorico(`Excluído: ${matricula}`);
+                }
+
+                // =============== BACKUP AUTOMÁTICO ===============
+                function criarBackup() {
+                    const agora = new Date();
+                    const timestamp = `${agora.getFullYear()}${String(agora.getMonth() + 1).padStart(2, '0')}${String(agora.getDate()).padStart(2, '0')}_${String(agora.getHours()).padStart(2, '0')}${String(agora.getMinutes()).padStart(2, '0')}`;
+                    localStorage.setItem(`techs_backup_${timestamp}`, JSON.stringify(techs));
+                }
+
+                function iniciarBackupAutomatico() {
+                    if (backupInterval) clearInterval(backupInterval);
+                    backupInterval = setInterval(criarBackup, 5 * 60 * 1000);
+                }
+
+                // =============== MODO ACESSÍVEL ===============
+                function alternarModoAcessivel() {
+                    document.body.classList.toggle('modo-acessivel');
+                    const ativo = document.body.classList.contains('modo-acessivel');
+                    localStorage.setItem('modoAcessivel', ativo);
+                }
+
+                // =============== ATALHOS DE TECLADO ===============
+                document.addEventListener('keydown', (e) => {
+                    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+                        e.preventDefault();
+                        document.getElementById('techForm').dispatchEvent(new Event('submit'));
+                    }
+                    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'l') {
+                        e.preventDefault();
+                        resetForm();
+                    }
+                    if (e.key === 'Escape' && editingMatricula) {
+                        resetForm();
+                    }
+                });
+
+                // =============== EXIBIÇÃO DA LISTA ===============
+                function displayTechs(filtered = techs) {
+                    const list = document.getElementById('techList');
+                    list.innerHTML = '';
+                    if (filtered.length === 0) {
+                        list.innerHTML = '<div class="tech-list-item">Nenhum técnico encontrado.</div>';
+                        return;
+                    }
+                    filtered.forEach(tech => {
+                        const div = document.createElement('div');
+                        div.className = 'tech-list-item';
+                        div.setAttribute('role', 'listitem');
+                        div.innerHTML = `
+          Matrícula: ${tech.matricula} | Nome: ${tech.name} | Tel: ${tech.telefone} | Esp: ${tech.specialty}
+          <span class="excluir-btn" title="Excluir">🗑️</span>
+        `;
+                        div.addEventListener('click', (e) => {
+                            if (!e.target.classList.contains('excluir-btn')) {
+                                iniciarEdicao(tech);
+                            }
+                        });
+                        div.querySelector('.excluir-btn').addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            excluirTecnico(tech.matricula);
+                        });
+                        list.appendChild(div);
+                    });
+                }
+
+                // =============== EDIÇÃO ===============
+                function iniciarEdicao(tech) {
+                    document.getElementById('matricula').value = tech.matricula;
+                    document.getElementById('name').value = tech.name;
+                    document.getElementById('telefone').value = tech.telefone;
+                    document.getElementById('specialty').value = tech.specialty;
+                    editingMatricula = tech.matricula;
+                    document.querySelector('#techForm .btn-cadastrar').textContent = 'Atualizar';
+                    document.getElementById('cancelEditBtn').style.display = 'inline-block';
+                }
+
+                // =============== SUBMISSÃO ===============
+                document.getElementById('techForm').addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const matricula = document.getElementById('matricula').value.trim();
+                    const name = document.getElementById('name').value.trim();
+                    const telefone = document.getElementById('telefone').value.trim();
+                    const specialty = document.getElementById('specialty').value.trim();
+
+                    if (!validarTelefone(telefone)) {
+                        displayMessage('Telefone inválido! Use o formato (XX) 9XXXX-XXXX.', 'error');
+                        return;
+                    }
+
+                    if (editingMatricula) {
+                        if (matricula !== editingMatricula && techs.some(t => t.matricula === matricula)) {
+                            displayMessage('Matrícula já cadastrada!', 'error');
+                            return;
+                        }
+                        techs = techs.map(t => t.matricula === editingMatricula ? { matricula, name, telefone, specialty } : t);
+                        adicionarAoHistorico(`Atualizado: ${matricula} (${name})`);
+                    } else {
+                        if (techs.some(t => t.matricula === matricula)) {
+                            displayMessage('Técnico já cadastrado!', 'error');
+                            return;
+                        }
+                        techs.push({ matricula, name, telefone, specialty });
+                        adicionarAoHistorico(`Cadastrado: ${matricula} (${name})`);
+                    }
+
+                    localStorage.setItem('techs', JSON.stringify(techs));
+                    resetForm();
+                    displayTechs();
+                    displayMessage(editingMatricula ? 'Atualizado!' : 'Cadastrado!', 'success');
+
+                    const overlay = document.getElementById('superSuccess');
+                    overlay.style.display = 'flex';
+                    setTimeout(() => overlay.style.display = 'none', 2000);
+                });
+
+                // =============== IMPORTAÇÃO VIA ARQUIVO LOCAL ===============
+                document.getElementById('importBtn').addEventListener('click', function () {
+                    document.getElementById('fileImport').click();
+                });
+
+                document.getElementById('fileImport').addEventListener('change', function (event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    const btn = document.getElementById('importBtn');
+                    const originalText = btn.textContent;
+                    setLoading(btn, true, originalText);
+
+                    reader.onload = function (e) {
+                        try {
+                            const data = JSON.parse(e.target.result);
+
+                            if (!Array.isArray(data)) {
+                                throw new Error('O arquivo deve conter um array de técnicos.');
+                            }
+
+                            const validData = data.filter(item =>
+                                item.matricula !== undefined &&
+                                item.name !== undefined &&
+                                item.telefone !== undefined &&
+                                item.specialty !== undefined
+                            );
+
+                            if (validData.length === 0) {
+                                throw new Error('Nenhum técnico válido encontrado.');
+                            }
+
+                            const newTechs = validData.filter(d => !techs.some(t => t.matricula === d.matricula));
+                            techs = [...techs, ...newTechs];
+                            localStorage.setItem('techs', JSON.stringify(techs));
+
+                            displayTechs();
+                            displayMessage(`Importado(s): ${newTechs.length} técnico(s) novo(s)!`, 'success');
+                            adicionarAoHistorico(`Importados do arquivo: ${newTechs.length} técnicos`);
+
+                        } catch (err) {
+                            console.error(err);
+                            displayMessage('Erro ao importar: ' + (err.message || 'Arquivo inválido'), 'error');
+                        } finally {
+                            setLoading(btn, false, originalText);
+                            event.target.value = '';
+                        }
+                    };
+
+                    reader.onerror = function () {
+                        displayMessage('Erro ao ler o arquivo.', 'error');
+                        setLoading(btn, false, originalText);
+                    };
+
+                    reader.readAsText(file);
+                });
+
+                // =============== LIMPAR ===============
+                document.getElementById('clearBtn').addEventListener('click', function () {
+                    if (confirm('Apagar todos os dados?')) {
+                        const btn = this;
+                        const original = btn.textContent;
+                        setLoading(btn, true, original);
+                        setTimeout(() => {
+                            localStorage.removeItem('techs');
+                            techs = [];
+                            resetForm();
+                            displayTechs();
+                            displayMessage('Dados apagados!', 'success');
+                            adicionarAoHistorico('Todos os dados apagados');
+                            setLoading(btn, false, original);
+                        }, 300);
+                    }
+                });
+
+                // =============== EXPORTAR ===============
+                document.getElementById('exportBtn').addEventListener('click', function () {
+                    const btn = this;
+                    const original = btn.textContent;
+                    setLoading(btn, true, original);
+                    setTimeout(() => {
+                        const blob = new Blob([JSON.stringify(techs, null, 2)], { type: 'application/json' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        Object.assign(a, { href: url, download: 'tecnicos.json' });
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        displayMessage('Exportado!', 'success');
+                        setLoading(btn, false, original);
+                    }, 200);
+                });
+
+                // =============== CANCELAR EDIÇÃO ===============
+                document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
+
+                // =============== BUSCA ===============
+                function searchTech() {
+                    const q = document.getElementById('search').value.toLowerCase();
+                    const f = techs.filter(t =>
+                        t.name.toLowerCase().includes(q) ||
+                        t.specialty.toLowerCase().includes(q) ||
+                        t.matricula.includes(q) ||
+                        t.telefone.includes(q)
+                    );
+                    displayTechs(f);
+                }
+
+                // =============== INICIALIZAÇÃO ===============
+                document.addEventListener('DOMContentLoaded', () => {
+                    if (localStorage.getItem('modoAcessivel') === 'true') {
+                        document.body.classList.add('modo-acessivel');
+                    }
+
+                    displayTechs();
+                    atualizarHistoricoUI();
+                    iniciarBackupAutomatico();
+                    document.getElementById('matricula').focus();
+
+                    document.getElementById('toggleA11y').addEventListener('click', alternarModoAcessivel);
+                });
+
+                // Função para exibir os técnicos em forma de tabela
+                function displayTechs(filtered = techs) {
+                    const list = document.getElementById('techList').getElementsByTagName('tbody')[0];
+                    list.innerHTML = ''; // Limpa a tabela antes de adicionar novos dados
+                    if (filtered.length === 0) {
+                        list.innerHTML = '<tr><td colspan="5" class="tech-list-item">Nenhum técnico encontrado.</td></tr>';
+                        return;
+                    }
+                    filtered.forEach(tech => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                <td>${tech.matricula}</td>
+                <td>${tech.name}</td>
+                <td>${tech.telefone}</td>
+                <td>${tech.specialty}</td>
+                <td><button class="tech-button" onclick="iniciarEdicao(${tech.matricula})">Ver Detalhes</button>
+                    <span class="excluir-btn" title="Excluir" onclick="excluirTecnico(${tech.matricula})">🗑️</span>
+                </td>
+            `;
+                        list.appendChild(row);
+                    });
+                }
+            </script>
+        </div>
+</body>
+
+</html>
