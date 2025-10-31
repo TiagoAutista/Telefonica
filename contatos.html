@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="rpg-ui">
+        <div class="rpgui-content">
+            <!-- ==============================
+        CABEÇALHO: MENUS PRINCIPAIS
+        =============================== -->
+            <header>
+                <nav class="rpgui-container framed " style="height: 120px; width: 80%; top: 0; left: 10%;">
+                    <div class="rpgui-nav-title">CLIENT SELECT</div>
+                    <ul class="rpgui-nav-list">
+                        <li class="rpgui-nav-item"><a class="active" href="/index.html">HOME</a></li>
+                        <li class="rpgui-nav-item"><a href="#">SOBRE</a></li>
+                        <li class="rpgui-nav-item"><a href="#">PROJETO</a></li>
+                        <li class="rpgui-nav-item"><a href="#">ACESSOS</a></li>
+                        <li class="rpgui-nav-item"><a href="#">TELEFÔNICA</a></li>
+                    </ul>
+                </nav>
+            </header>
+            <!-- ==============================
+        CABEÇALHO: MENUS PRINCIPAIS
+        =============================== -->
+
+            <div class="main-ui">
+                <div class="main-content">
+                    <section>
+                        <div>
+                            <main class="rpgui-container framed "
+                                style="height:1000px; width:80%; top: 45%; left: 10%;">
+                                <section class="rpgui-container framed " style="margin-top: 25px;">
+                                    <h2 class="rpgui-title">CADASTRO DE CLIENTES</h2>
+                                    <div class="rpgui-section">
+                                        <form id="clientForm">
+                                            <input type="text" class="main-input" id="pon" placeholder="PON" required />
+                                            <input type="text" class="main-input" id="cpf"
+                                                placeholder="CPF (ex: 123.456.789-01)" required />
+                                            <input type="date" class="main-input" id="dataCriacao" required />
+                                            <button type="submit" class="main-button btn-cadastrar">Cadastrar</button>
+                                            <button type="button" id="cancelEditBtn" class="main-button"
+                                                style="display:none; background: linear-gradient(to bottom, #555, #333);">Cancelar</button>
+                                        </form>
+                                        <div style="margin-top: 25px; text-align: center;">
+                                            <button id="importBtn" class="main-button btn-importar">Importar do
+                                                JSON</button>
+                                            <button id="clearBtn" class="main-button btn-limpar">Limpar Dados</button>
+                                            <button id="exportBtn" class="main-button btn-exportar">Exportar
+                                                JSON</button>
+                                            <button id="toggleA11y" class="main-button"
+                                                style="margin-top:10px; font-size:0.85em; padding:6px 12px;">Modo
+                                                Acessível</button>
+                                        </div>
+                                        <div style="margin-top: 25px;">
+                                            <input type="text" class="main-input" id="search"
+                                                placeholder="Buscar cliente..." oninput="searchClient()" />
+                                        </div>
+                                        <section>
+                                            <table id="clientList" role="list"
+                                                aria-label="Lista de clientes cadastrados">
+                                                <thead>
+                                                    <tr>
+                                                        <th>PON</th>
+                                                        <th>CPF</th>
+                                                        <th>Data de Criação</th>
+                                                        <th>Ações</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Os dados aqui serão gerados dinamicamente via JavaScript -->
+                                                </tbody>
+                                            </table>
+                                        </section>
+                                        <div id="message" style="margin-top: 15px; min-height: 24px;"></div>
+                                        <div id="historicoLog"></div>
+                                    </div>
+                                </section>
+                            </main>
+                            <footer
+                                style="text-align: center; margin-top: 40px; font-size: 0.85em; color: #ccc; text-shadow: 0 0 4px black;">
+                                © 2025 YOUR COMPANY - TELEFÔNICA OPERATIONS
+                            </footer>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let clients = JSON.parse(localStorage.getItem('clients')) || [];
+        let editingPON = null;
+        let historico = JSON.parse(localStorage.getItem('clients_historico')) || [];
+        let backupInterval = null;
+
+        // =============== UTILITÁRIOS ===============
+        function displayMessage(msg, type) {
+            const el = document.getElementById('message');
+            el.textContent = msg;
+            el.className = type === 'success' ? 'message-success' : 'message-error';
+        }
+
+        function resetForm() {
+            document.getElementById('clientForm').reset();
+            editingPON = null;
+            document.querySelector('#clientForm .btn-cadastrar').textContent = 'Cadastrar';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+        }
+
+        // =============== HISTÓRICO ===============
+        function adicionarAoHistorico(acao) {
+            const entrada = `${new Date().toLocaleTimeString()} - ${acao}`;
+            historico.unshift(entrada);
+            historico = historico.slice(0, 10);
+            localStorage.setItem('clients_historico', JSON.stringify(historico));
+            atualizarHistoricoUI();
+        }
+
+        function atualizarHistoricoUI() {
+            const div = document.getElementById('historicoLog');
+            div.innerHTML = '<strong>Últimas ações:</strong><br>' + (historico.length ? historico.join('<br>') : 'Nenhuma ação registrada.');
+        }
+
+        // =============== EXCLUSÃO ===============
+        function excluirCliente(pon) {
+            if (!confirm(`Deseja excluir o cliente com PON ${pon}?`)) return;
+            clients = clients.filter(c => c.pon !== pon);
+            localStorage.setItem('clients', JSON.stringify(clients));
+            resetForm();
+            displayClients();
+            displayMessage('Cliente excluído com sucesso!', 'success');
+            adicionarAoHistorico(`Excluído: ${pon}`);
+        }
+
+        // =============== EXIBIÇÃO DA LISTA ===============
+        function displayClients(filtered = clients) {
+            const list = document.getElementById('clientList').getElementsByTagName('tbody')[0];
+            list.innerHTML = ''; // Limpa a tabela antes de adicionar novos dados
+            if (filtered.length === 0) {
+                list.innerHTML = '<tr><td colspan="4" class="tech-list-item">Nenhum cliente encontrado.</td></tr>';
+                return;
+            }
+            filtered.forEach(client => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${client.pon}</td>
+                <td>${client.cpf}</td>
+                <td>${client.dataCriacao}</td>
+                <td>
+                    <button class="client-button" onclick="iniciarEdicao('${client.pon}')">Editar</button>
+                    <span class="excluir-btn" title="Excluir" onclick="excluirCliente('${client.pon}')">🗑️</span>
+                </td>
+            `;
+                list.appendChild(row);
+            });
+        }
+
+        // =============== EDIÇÃO ===============
+        function iniciarEdicao(client) {
+            document.getElementById('pon').value = client.pon;
+            document.getElementById('cpf').value = client.cpf;
+            document.getElementById('dataCriacao').value = client.dataCriacao;
+            editingPON = client.pon;
+            document.querySelector('#clientForm .btn-cadastrar').textContent = 'Atualizar';
+            document.getElementById('cancelEditBtn').style.display = 'inline-block';
+        }
+
+        // =============== SUBMISSÃO ===============
+        document.getElementById('clientForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const pon = document.getElementById('pon').value.trim();
+            const cpf = document.getElementById('cpf').value.trim();
+            const dataCriacao = document.getElementById('dataCriacao').value.trim();
+
+            if (editingPON) {
+                clients = clients.map(c => c.pon === editingPON ? { pon, cpf, dataCriacao } : c);
+                adicionarAoHistorico(`Atualizado: ${pon}`);
+            } else {
+                if (clients.some(c => c.pon === pon)) {
+                    displayMessage('Cliente já cadastrado!', 'error');
+                    return;
+                }
+                clients.push({ pon, cpf, dataCriacao });
+                adicionarAoHistorico(`Cadastrado: ${pon}`);
+            }
+
+            localStorage.setItem('clients', JSON.stringify(clients));
+            resetForm();
+            displayClients();
+            displayMessage(editingPON ? 'Atualizado!' : 'Cadastrado!', 'success');
+        });
+
+        // =============== CANCELAR EDIÇÃO ===============
+        document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
+
+        // =============== BUSCA ===============
+        function searchClient() {
+            const q = document.getElementById('search').value.toLowerCase();
+            const f = clients.filter(c =>
+                c.pon.includes(q) ||
+                c.cpf.includes(q)
+            );
+            displayClients(f);
+        }
+
+        // =============== INICIALIZAÇÃO ===============
+        document.addEventListener('DOMContentLoaded', () => {
+            displayClients();
+            atualizarHistoricoUI();
+            document.getElementById('pon').focus();
+        });
+
+    </script>
+</body>
+
+</html>
