@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Técnicos</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Adicione seu CSS aqui -->
+
+    <style>
+        /* Estilos base RPGUI (simulando o rpgui.css) */
+        body {
+            background: #1a1a2e url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%231a1a2e"/><path d="M0 0L100 100M100 0L0 100" stroke="%232a2a4e" stroke-width="1"/></svg>') repeat;
+            color: #e0e0ff;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.modo-acessivel {
+            background: #ffffff !important;
+            color: #000000 !important;
+        }
+
+        .rpgui-container.framed {
+            background: rgba(10, 10, 30, 0.85);
+            border: 4px solid #4a5568;
+            border-image: repeating-linear-gradient(45deg, #553c9a, #553c9a 10px, #2d1b69 10px, #2d1b69 20px) 10;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+        }
+
+        .rpgui-nav-title {
+            color: gold;
+            font-size: 1.6em;
+            text-align: center;
+            margin-bottom: 12px;
+            text-shadow: 0 0 6px black;
+        }
+
+        .rpgui-nav-list {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 16px;
+        }
+
+        .rpgui-nav-item a {
+            color: #a0a0ff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .rpgui-nav-item a:hover,
+        .rpgui-nav-item a.active {
+            color: white;
+            border-color: gold;
+            background: rgba(80, 60, 180, 0.3);
+        }
+
+        body.modo-acessivel .rpgui-nav-item a {
+            color: #000 !important;
+            border-color: #000 !important;
+        }
+
+        .main-input {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0 12px;
+            border: 1px solid #555;
+            background: rgba(20, 20, 40, 0.8);
+            color: white;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        body.modo-acessivel .main-input {
+            background: #fff !important;
+            color: #000 !important;
+            border-color: #000 !important;
+        }
+
+        .main-button {
+            position: relative;
+            margin: 6px 4px;
+            padding: 10px 16px;
+            font-weight: bold;
+            font-size: 0.95em;
+            color: white;
+            background: linear-gradient(135deg, #2c1e5f, #1a103a);
+            border: 2px solid #8a7bff;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        body.modo-acessivel .main-button {
+            color: #000 !important;
+            border-color: #000 !important;
+        }
+
+        .main-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 10px rgba(138, 123, 255, 0.6);
+        }
+
+        .btn-cadastrar {
+            background: linear-gradient(135deg, #c00, #800);
+            border-color: #ff6666;
+        }
+
+        .btn-limpar {
+            background: linear-gradient(135deg, #a00, #600);
+            border-color: #ff4444;
+        }
+
+        .btn-exportar {
+            background: linear-gradient(135deg, #0066cc, #003366);
+            border-color: #4da6ff;
+        }
+
+        .btn-importar {
+            background: linear-gradient(135deg, #008000, #004d00);
+            border-color: #66ff66;
+        }
+
+        .btn-loading {
+            opacity: 0.6;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        #clientList {
+            width: 100%;
+            margin-top: 16px;
+            border-collapse: collapse;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        #clientList th,
+        #clientList td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        #clientList th {
+            background: rgba(30, 30, 60, 0.9);
+            color: gold;
+        }
+
+        body.modo-acessivel #clientList th {
+            color: #000 !important;
+            background: #eee !important;
+        }
+
+        #clientList tbody tr:hover {
+            background: rgba(50, 50, 100, 0.5);
+        }
+
+        .excluir-btn {
+            color: #ff5555;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 8px;
+            display: inline-block;
+        }
+
+        .message-success {
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .message-error {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        #historicoLog {
+            margin-top: 20px;
+            font-size: 0.85em;
+            color: #aaa;
+        }
+
+        body.modo-acessivel #historicoLog {
+            color: #555 !important;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.85em;
+            color: #ccc;
+            text-shadow: 0 0 4px black;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h2 style="text-align: center;">CADASTRO DE TÉCNICO</h2>
+
+        <form id="clientForm">
+            <input type="text" class="main-input" id="pon" placeholder="Matrícula (ex: MAT12345)" required />
+            <input type="text" class="main-input" id="nome" placeholder="Nome Completo" required />
+            <input type="tel" class="main-input" id="telefone" placeholder="Telefone (ex: (11) 91234-5678)" required />
+            <input type="text" class="main-input" id="regiao" placeholder="Região (ex: Sul, Norte, etc.)" required />
+            <input type="date" class="main-input" id="dataCriacao" required />
+            <button type="submit" class="main-button btn-cadastrar">Cadastrar Técnico</button>
+            <button type="button" id="cancelEditBtn" class="main-button" style="display:none;">Cancelar</button>
+        </form>
+
+        <div style="margin-top: 20px; text-align: center;">
+            <input type="file" id="fileImport" style="display:none">
+            <button id="importBtn" class="main-button">Importar do JSON</button>
+            <button id="clearBtn" class="main-button">Limpar Dados</button>
+            <button id="exportBtn" class="main-button">Exportar JSON</button>
+            <button id="toggleA11y" class="main-button">Modo Acessível</button>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <input type="text" class="main-input" id="search" placeholder="Buscar técnico..."
+                oninput="searchClient()" />
+        </div>
+
+        <table id="clientList">
+            <thead>
+                <tr>
+                    <th>Matrícula</th>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>Região</th>
+                    <th>Data de Criação</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div id="message" style="margin-top: 15px;"></div>
+        <div id="historicoLog"></div>
+    </main>
+
+    <script>
+        let tecnicos = JSON.parse(localStorage.getItem('tecnicos')) || []; // Armazena os técnicos
+        let historicoTecnicos = JSON.parse(localStorage.getItem('tecnicos_historico')) || []; // Histórico dos técnicos
+        let editingPON = null; // Para editar um técnico
+
+        // =============== FUNÇÕES UTILITY ===============
+
+        function displayMessage(msg, type) {
+            const el = document.getElementById('message');
+            el.textContent = msg;
+            el.className = type === 'success' ? 'message-success' : 'message-error';
+        }
+
+        function resetForm() {
+            document.getElementById('clientForm').reset();
+            editingPON = null;
+            document.querySelector('#clientForm .btn-cadastrar').textContent = 'Cadastrar';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+        }
+
+        // =============== CADASTRO DE TÉCNICOS ===============
+        document.getElementById('clientForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const pon = document.getElementById('pon').value.trim();
+            const nome = document.getElementById('nome').value.trim();
+            const telefone = document.getElementById('telefone').value.trim();
+            const regiao = document.getElementById('regiao').value.trim();
+            const dataCriacao = document.getElementById('dataCriacao').value;
+
+            if (editingPON) {
+                if (pon !== editingPON && tecnicos.some(t => t.pon === pon)) {
+                    displayMessage('Matrícula já cadastrada!', 'error');
+                    return;
+                }
+                tecnicos = tecnicos.map(t => t.pon === editingPON ? { pon, nome, telefone, regiao, dataCriacao } : t);
+            } else {
+                if (tecnicos.some(t => t.pon === pon)) {
+                    displayMessage('Técnico já cadastrado!', 'error');
+                    return;
+                }
+                tecnicos.push({ pon, nome, telefone, regiao, dataCriacao });
+            }
+
+            localStorage.setItem('tecnicos', JSON.stringify(tecnicos)); // Salva no localStorage
+            resetForm();
+            displayTechnicians(); // Atualiza a lista de técnicos
+            displayMessage(editingPON ? 'Atualizado!' : 'Cadastrado!', 'success');
+        });
+
+        // =============== EXIBIÇÃO DA LISTA DE TÉCNICOS ===============
+        function displayTechnicians(filtered = tecnicos) {
+            const tbody = document.querySelector('#clientList tbody');
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:12px;">Nenhum técnico encontrado.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(tecnico => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${tecnico.pon}</td>
+                    <td>${tecnico.nome}</td>
+                    <td>${tecnico.telefone}</td>
+                    <td>${tecnico.regiao}</td>
+                    <td>${tecnico.dataCriacao}</td>
+                    <td>
+                        <button class="main-button" onclick="iniciarEdicao('${tecnico.pon}')">Editar</button>
+                        <span class="excluir-btn" onclick="excluirTecnico('${tecnico.pon}')">🗑️</span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Exclui um técnico
+        function excluirTecnico(pon) {
+            if (!confirm(`Deseja excluir o técnico com matrícula ${pon}?`)) return;
+            tecnicos = tecnicos.filter(t => t.pon !== pon);
+            localStorage.setItem('tecnicos', JSON.stringify(tecnicos));
+            resetForm();
+            displayTechnicians();
+            displayMessage('Técnico excluído com sucesso!', 'success');
+        }
+
+        // Inicia a edição de um técnico
+        function iniciarEdicao(pon) {
+            const tecnico = tecnicos.find(t => t.pon === pon);
+            if (!tecnico) return;
+            document.getElementById('pon').value = tecnico.pon;
+            document.getElementById('nome').value = tecnico.nome;
+            document.getElementById('telefone').value = tecnico.telefone;
+            document.getElementById('regiao').value = tecnico.regiao;
+            document.getElementById('dataCriacao').value = tecnico.dataCriacao; // Adicionando data de criação
+            editingPON = tecnico.pon;
+            document.querySelector('#clientForm .btn-cadastrar').textContent = 'Atualizar';
+            document.getElementById('cancelEditBtn').style.display = 'inline-block';
+        }
+        // =============== IMPORTAÇÃO ===============
+        document.getElementById('importBtn').addEventListener('click', () => {
+            document.getElementById('fileImport').click(); // Simula o clique no input de arquivo
+        });
+
+        document.getElementById('fileImport').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            const btn = document.getElementById('importBtn');
+            const orig = btn.textContent;
+            setLoading(btn, true, orig);
+
+            reader.onload = function () {
+                try {
+                    const data = JSON.parse(reader.result);
+                    if (!Array.isArray(data)) throw new Error('Esperado um array.');
+                    const valid = data.filter(t => t.pon && t.nome && t.telefone && t.regiao); // Removendo CPF
+                    const novos = valid.filter(n => !tecnicos.some(t => t.pon === n.pon));
+                    tecnicos = [...tecnicos, ...novos];
+                    localStorage.setItem('tecnicos', JSON.stringify(tecnicos));
+                    displayTechnicians();
+                    displayMessage(`Importado(s): ${novos.length} técnico(s) novo(s)!`, 'success');
+                } catch (err) {
+                    displayMessage('Erro ao importar: ' + (err.message || 'Arquivo inválido'), 'error');
+                } finally {
+                    setLoading(btn, false, orig);
+                    e.target.value = ''; // Limpa a seleção após a importação
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        // =============== EXPORTAÇÃO ===============
+        document.getElementById('exportBtn').addEventListener('click', function () {
+            if (tecnicos.length === 0) {
+                displayMessage('Não há dados para exportar.', 'error');
+                return; // Retorna se não houver técnicos cadastrados
+            }
+
+            const btn = this;
+            const orig = btn.textContent; // Armazena o texto original do botão
+            setLoading(btn, true, orig); // Indica que a exportação está em andamento
+
+            setTimeout(() => {
+                const blob = new Blob([JSON.stringify(tecnicos, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob); // Cria um URL para o Blob
+                const a = document.createElement('a'); // Cria um elemento âncora
+                a.href = url; // Define o href como o URL do Blob
+                a.download = `tecnicos_${new Date().toISOString().slice(0, 10)}.json`; // Define o nome do arquivo
+                a.click(); // Aciona o download
+                URL.revokeObjectURL(url); // Libera o objeto URL
+
+                displayMessage('Exportado com sucesso!', 'success'); // Mensagem de sucesso
+                setLoading(btn, false, orig); // Restaura o estado do botão
+            }, 200); // Pequeno atraso para simular carga
+        });
+
+        // =============== LIMPAR DADOS ===============
+        document.getElementById('clearBtn').addEventListener('click', function () {
+            if (confirm('Tem certeza de que deseja apagar todos os técnicos? Esta ação não pode ser desfeita.')) {
+                const btn = this;
+                const orig = btn.textContent; // Armazena o texto original do botão
+                setLoading(btn, true, orig); // Indica que a operação está em andamento
+
+                setTimeout(() => {
+                    localStorage.removeItem('tecnicos'); // Remove os dados dos técnicos do localStorage
+                    tecnicos = []; // Reinicializa a lista de técnicos para um array vazio
+                    resetForm(); // Reseta o formulário para o estado inicial
+                    displayTechnicians(); // Atualiza a exibição da lista de técnicos
+                    displayMessage('Todos os dados foram apagados.', 'success'); // Mensagem de sucesso
+                    setLoading(btn, false, orig); // Restaura o estado do botão
+                }, 200); // Atraso pequeno para simular a ação
+            }
+        });
+
+        // Função de exibição da lista de técnicos
+        function displayTechnicians(filtered = tecnicos) {
+            const tbody = document.querySelector('#clientList tbody');
+            tbody.innerHTML = ''; // Limpa a tabela antes de atualizar
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:12px;">Nenhum técnico encontrado.</td></tr>`;
+                return; // Se não houver técnicos, apenas exibe mensagem
+            }
+
+            filtered.forEach(tecnico => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+            <td>${tecnico.pon}</td>
+            <td>${tecnico.nome}</td>
+            <td>${tecnico.telefone}</td>
+            <td>${tecnico.regiao}</td>
+            <td>${tecnico.dataCriacao}</td>
+            <td>
+                <button class="main-button" onclick="iniciarEdicao('${tecnico.pon}')">Editar</button>
+                <span class="excluir-btn" onclick="excluirTecnico('${tecnico.pon}')">🗑️</span>
+            </td>
+        `;
+                tbody.appendChild(tr); // Adiciona a linha à tabela
+            });
+        }
+
+        // Função para resetar o formulário
+        function resetForm() {
+            document.getElementById('clientForm').reset(); // Reseta os campos do formulário
+            editingPON = null; // Reinicia a variável de edição
+            document.querySelector('#clientForm .btn-cadastrar').textContent = 'Cadastrar'; // Altera botão de cadastrar
+            document.getElementById('cancelEditBtn').style.display = 'none'; // Esconde botão de cancelar
+        }
+
+        // Função para exibir mensagens de feedback
+        function displayMessage(msg, type) {
+            const el = document.getElementById('message');
+            el.textContent = msg; // Define o texto da mensagem
+            el.className = type === 'success' ? 'message-success' : 'message-error'; // Altera a classe para estilização
+        }
+
+        // Atualizar a inicialização para verificar técnicos ao carregar a página
+        document.addEventListener('DOMContentLoaded', () => {
+            tecnicos = JSON.parse(localStorage.getItem('tecnicos')) || []; // Carrega técnicos do localStorage
+            displayTechnicians(); // Exibe a lista de técnicos na inicialização
+        });
+
+        // =============== MODO ACESSÍVEL ===============
+        document.getElementById('toggleA11y').addEventListener('click', () => {
+            document.body.classList.toggle('modo-acessivel');
+            localStorage.setItem('modoAcessivel', document.body.classList.contains('modo-acessivel'));
+            displayMessage('Modo acessível ativado/desativado.', 'info');
+        });
+
+        // =============== INICIALIZAÇÃO ===============
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('modoAcessivel') === 'true') {
+                document.body.classList.add('modo-acessivel');
+            }
+            displayTechnicians(); // Exibe a lista de técnicos na inicialização
+            document.getElementById('pon').focus(); // Foca no campo de matrícula ao carregar
+        });
+    </script>
+</body>
+
+</html>
+</body>
+
+</html>
