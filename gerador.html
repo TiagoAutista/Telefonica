@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Ordens</title>
+
+    <link rel="stylesheet" href="/assets/css/a.css">
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4; /* Melhoria na cor de fundo */
+            color: #333;
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: #2c3e50; /* Mudança de cor dos títulos */
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block; /* Faz o label ocupar um bloco, melhorando a acessibilidade */
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            width: 100%; /* Largura total */
+            max-width: 350px; /* Limitação da largura máxima */
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: border 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007BFF; /* Destacar a borda ao focar */
+            outline: none; /* Remove o contorno padrão */
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: 14px;
+            margin-top: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px); /* Efeito de elevação ao passar o mouse */
+        }
+
+        .ordem-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s;
+        }
+
+        .ordem-item:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Sombra ao passar o mouse */
+        }
+
+        .ordem-text {
+            font-size: 16px;
+            color: #333;
+            flex-grow: 1;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 5px;
+        }
+
+        #ordens-sequenciais {
+            margin-top: 20px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilos para o Modal */
+        #modal {
+            display: none; /* Escondido por padrão */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        #modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 400px; /* Largura máxima do modal */
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #333; /* Cor ao passar o mouse */
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Media Queries para Responsividade */
+        @media (max-width: 768px) {
+            input[type="text"], button {
+                width: 100%; /* Largura total em telas menores */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Cadastrar Ordens</h1>
+
+    <label for="nova-ordem">Nova Ordem (Matrícula PON):</label>
+    <input type="text" id="nova-ordem" placeholder="Digite a matrícula aqui..." />
+    <button id="add-button">Cadastrar Ordem</button>
+
+    <div>
+        <button id="import-button">Importar Ordens do JSON</button>
+        <input type="file" id="json-file-input" accept=".json" style="display:none;" />
+        <button id="export-button" style="display:none;">Exportar Ordens como JSON</button>
+        <button id="clear-button">Apagar Todas as Ordens</button>
+    </div>
+
+    <button id="sequencial-button">Gerar Ordens Sequenciais</button>
+    <button id="concluir-button" style="display: none;">Concluir Ordem</button>
+    <h3 id="ordem-atual"></h3>
+    <div id="ordens-sequenciais"></div>
+
+    <h2>Ordens Cadastradas</h2>
+    <div id="ordens-container"></div>
+
+    <!-- Modal -->
+    <div id="modal">
+        <div id="modal-content">
+            <span class="close">&times;</span>
+            <h2>Ordem Sequencial</h2>
+            <p id="modal-ordem"></p>
+            <button id="confirm-button">Esta ordem está feita</button>
+        </div>
+    </div>
+
+    <script src="/assets/js/ordens/index.js"></script>
+</body>
+
+</html>
