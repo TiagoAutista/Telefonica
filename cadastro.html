@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Ordens de Serviço</title>
+    <link rel="stylesheet" href="/assets/css/a.css">
+</head>
+
+<body>
+    <main>
+        <h2>Cadastrar Ordem de Serviço</h2>
+
+        <form id="orderForm" class="form-container">
+            <input type="text" class="main-input" id="ponOrdem" placeholder="PON da Ordem (ex: ORD12345)" required />
+            <input type="text" class="main-input" id="tecnico" placeholder="Matrícula do Técnico (ex: MAT12345)" required />
+            <select class="main-input" id="descricao" required>
+                <option value="" disabled selected>Selecione o tipo de serviço</option>
+                <option value="Manobra">Manobra</option>
+                <option value="Informação Técnica">Informação Técnica</option>
+            </select>
+            <input type="date" class="main-input" id="dataOrdem" required />
+            <select class="main-input" id="status" required>
+                <option value="" disabled selected>Selecione o status</option>
+                <option value="Manobrado">Manobrado</option>
+                <option value="Não Manobrado">Não Manobrado</option>
+                <option value="Informado">Informado</option>
+                <option value="Não Informado">Não Informado</option>
+            </select>
+            <input type="text" class="main-input" id="cpfCnpj" placeholder="CPF ou CNPJ" required />
+            <div class="button-group">
+                <button type="submit" class="main-button">Cadastrar Ordem</button>
+                <button type="button" id="cancelEditOrderBtn" class="main-button" style="display:none;">Cancelar</button>
+            </div>
+        </form>
+
+        <button id="updateCountOrderBtn" class="main-button">Atualizar Contagem</button>
+        <div id="countOrderMessage" class="count-message"></div>
+
+        <div class="action-buttons">
+            <div class="search-container">
+                <input type="text" class="main-input" id="searchOrder" placeholder="Buscar ordem..."
+                       oninput="searchOrder()" />
+            </div>
+        </div>
+
+        <table id="orderList">
+            <thead>
+                <tr>
+                    <th>PON da Ordem</th>
+                    <th>Matrícula do Técnico</th>
+                    <th>Tipo de Serviço</th>
+                    <th>Data da Ordem</th>
+                    <th>Status</th>
+                    <th>CPF/CNPJ</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div id="message" class="message"></div>
+
+    </main>
+
+    <script src="/assets/js/cadastro/index.js"></script>
+
+</body>
+
+</html>
