@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Técnicos</title>
+
+    <link rel="stylesheet" href="/assets/css/a.css">
+
+</head>
+
+<body>
+    <main>
+        <h2>Cadastra Técnico</h2>
+
+        <form id="clientForm" class="form-container">
+            <input type="text" class="main-input" id="pon" placeholder="Matrícula (ex: MAT12345)" required />
+            <input type="text" class="main-input" id="nome" placeholder="Nome Completo" required />
+            <input type="tel" class="main-input" id="telefone" placeholder="Telefone (ex: (11) 91234-5678)" required />
+            <select class="main-input" id="regiao" required>
+                <option class="acesso-vivo" value="TODOS">TODOS</option>
+                <option value="ABC">ABC</option>
+                <option value="CAMPANHA">CAMPANHA</option>
+                <option value="GUARULHOS">GUARULHOS</option>
+                <option value="MOGI DAS CRUZES">MOGI DAS CRUZES</option>
+                <option value="SANTOS">SANTOS</option>
+                <option value="SP/CARRÃO-ITAQUERA">SP/CARRÃO-ITAQUERA</option>
+                <option value="SP/PAULISTA-JARDINS">SP/PAULISTA-JARDINS</option>
+                <option value="SP/PERUS-BUTANTÃ">SP/PERUS-BUTANTÃ</option>
+                <option value="SP/SANTANA-TREMEMBE">SP/SANTANA-TREMEMBE</option>
+                <option value="SP/SAUDE-PARELHEIROS">SP/SAUDE-PARELHEIROS</option>
+                <option value="SP/SÉ-SÃO MATHEUS">SP/SÉ-SÃO MATHEUS</option>
+                <option value="SP/STO AMARO-CAPÃO REDONDO">SP/STO AMARO-CAPÃO REDONDO</option>
+            </select>
+            <input type="date" class="main-input" id="dataCriacao" required />
+            <div class="button-group">
+                <button type="submit" class="main-button">Cadastrar Técnico</button>
+                <button type="button" id="cancelEditBtn" class="main-button" style="display:none;">Cancelar</button>
+            </div>
+        </form>
+
+        <button id="updateCountBtn" class="main-button">Atualizar Contagem</button>
+        <div id="countMessage" class="count-message"></div>
+
+        <div class="action-buttons">
+            <input type="file" id="fileImport" style="display:none" multiple>
+            <button id="importBtn" class="main-button">Importar do JSON</button>
+            <button id="clearBtn" class="main-button">Limpar Dados</button>
+            <button id="exportBtn" class="main-button">Exportar JSON</button>
+            <button id="toggleA11y" class="main-button">Modo Acessível</button>
+        </div>
+
+        <div class="search-container">
+            <input type="text" class="main-input" id="search" placeholder="Buscar técnico..."
+                oninput="searchClient()" />
+        </div>
+
+        <table id="clientList">
+            <thead>
+                <tr>
+                    <th>Matrícula</th>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>Região</th>
+                    <th>Data de Criação</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div id="message" class="message"></div>
+
+    </main>
+
+    <script src="/assets/js/tecnicos/index.js"></script>
+</body>
+
+</html>
