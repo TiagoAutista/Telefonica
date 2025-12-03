@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CLIENT SELECT - Cadastro de Clientes</title>
+    <style>
+        /* Estilos base RPGUI (simulando o rpgui.css) */
+        body {
+            background: #1a1a2e url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%231a1a2e"/><path d="M0 0L100 100M100 0L0 100" stroke="%232a2a4e" stroke-width="1"/></svg>') repeat;
+            color: #e0e0ff;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.modo-acessivel {
+            background: #ffffff !important;
+            color: #000000 !important;
+        }
+
+        .rpgui-container.framed {
+            background: rgba(10, 10, 30, 0.85);
+            border: 4px solid #4a5568;
+            border-image: repeating-linear-gradient(45deg, #553c9a, #553c9a 10px, #2d1b69 10px, #2d1b69 20px) 10;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+        }
+
+        .rpgui-nav-title {
+            color: gold;
+            font-size: 1.6em;
+            text-align: center;
+            margin-bottom: 12px;
+            text-shadow: 0 0 6px black;
+        }
+
+        .rpgui-nav-list {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 16px;
+        }
+
+        .rpgui-nav-item a {
+            color: #a0a0ff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .rpgui-nav-item a:hover,
+        .rpgui-nav-item a.active {
+            color: white;
+            border-color: gold;
+            background: rgba(80, 60, 180, 0.3);
+        }
+
+        body.modo-acessivel .rpgui-nav-item a {
+            color: #000 !important;
+            border-color: #000 !important;
+        }
+
+        .main-input {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0 12px;
+            border: 1px solid #555;
+            background: rgba(20, 20, 40, 0.8);
+            color: white;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        body.modo-acessivel .main-input {
+            background: #fff !important;
+            color: #000 !important;
+            border-color: #000 !important;
+        }
+
+        .main-button {
+            position: relative;
+            margin: 6px 4px;
+            padding: 10px 16px;
+            font-weight: bold;
+            font-size: 0.95em;
+            color: white;
+            background: linear-gradient(135deg, #2c1e5f, #1a103a);
+            border: 2px solid #8a7bff;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        body.modo-acessivel .main-button {
+            color: #000 !important;
+            border-color: #000 !important;
+        }
+
+        .main-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 10px rgba(138, 123, 255, 0.6);
+        }
+
+        .btn-cadastrar {
+            background: linear-gradient(135deg, #c00, #800);
+            border-color: #ff6666;
+        }
+
+        .btn-limpar {
+            background: linear-gradient(135deg, #a00, #600);
+            border-color: #ff4444;
+        }
+
+        .btn-exportar {
+            background: linear-gradient(135deg, #0066cc, #003366);
+            border-color: #4da6ff;
+        }
+
+        .btn-importar {
+            background: linear-gradient(135deg, #008000, #004d00);
+            border-color: #66ff66;
+        }
+
+        .btn-loading {
+            opacity: 0.6;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        #clientList {
+            width: 100%;
+            margin-top: 16px;
+            border-collapse: collapse;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        #clientList th,
+        #clientList td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        #clientList th {
+            background: rgba(30, 30, 60, 0.9);
+            color: gold;
+        }
+
+        body.modo-acessivel #clientList th {
+            color: #000 !important;
+            background: #eee !important;
+        }
+
+        #clientList tbody tr:hover {
+            background: rgba(50, 50, 100, 0.5);
+        }
+
+        .excluir-btn {
+            color: #ff5555;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 8px;
+            display: inline-block;
+        }
+
+        .excluir-btn[aria-label] {
+            /* Garante acessibilidade */
+        }
+
+        .message-success {
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .message-error {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        #historicoLog {
+            margin-top: 20px;
+            font-size: 0.85em;
+            color: #aaa;
+        }
+
+        body.modo-acessivel #historicoLog {
+            color: #555 !important;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.85em;
+            color: #ccc;
+            text-shadow: 0 0 4px black;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Input oculto para importação -->
+    <input type="file" id="fileImport" accept=".json" style="display: none;" />
+
+    <div class="rpg-ui">
+        <div class="rpgui-content">
+            <header>
+                <nav class="rpgui-container framed" style="height: 120px; width: 80%; margin: 0 auto;">
+                    <div class="rpgui-nav-title">CLIENT SELECT</div>
+                    <ul class="rpgui-nav-list">
+                        <li class="rpgui-nav-item"><a class="active" href="/index.html">HOME</a></li>
+                        <li class="rpgui-nav-item"><a href="#">SOBRE</a></li>
+                        <li class="rpgui-nav-item"><a href="#">PROJETO</a></li>
+                        <li class="rpgui-nav-item"><a href="#">ACESSOS</a></li>
+                        <li class="rpgui-nav-item"><a href="#">TELEFÔNICA</a></li>
+                    </ul>
+                </nav>
+            </header>
+
+            <main class="rpgui-container framed" style="width: 80%; margin: 20px auto; padding: 20px;">
+                <h2 class="rpgui-title" style="color: gold; text-align: center;">CADASTRO DE CLIENTES</h2>
+
+                <form id="clientForm">
+                    <input type="text" class="main-input" id="pon" placeholder="PON (ex: PON12345)" required />
+                    <input type="text" class="main-input" id="cpf" placeholder="CPF (ex: 123.456.789-01)" required />
+                    <input type="date" class="main-input" id="dataCriacao" required />
+                    <button type="submit" class="main-button btn-cadastrar">Cadastrar</button>
+                    <button id="btnContarPorData">Contar Ordens por Data</button>
+                    <div id="resultadoContagem"></div>
+                    <button type="button" id="cancelEditBtn" class="main-button"
+                        style="display:none; background: linear-gradient(to bottom, #555, #333);">
+                        Cancelar
+                    </button>
+                </form>
+
+                <div style="margin-top: 25px; text-align: center;">
+                    <button id="importBtn" class="main-button btn-importar">Importar do JSON</button>
+                    <button id="clearBtn" class="main-button btn-limpar">Limpar Dados</button>
+                    <button id="exportBtn" class="main-button btn-exportar">Exportar JSON</button>
+                    <button id="toggleA11y" class="main-button"
+                        style="margin-top:10px; font-size:0.85em; padding:6px 12px;">
+                        Modo Acessível
+                    </button>
+                </div>
+                <div>
+                    <input type="date" id="buscarData" class="main-input" />
+                    <button id="buscarBtn" class="main-button">Buscar Histórico por Data</button>
+                </div>
+                <table id="clientList" role="table" aria-label="Lista de clientes cadastrados">
+                    <thead>
+                        <tr>
+                            <th>PON</th>
+                            <th>CPF</th>
+                            <th>Data de Criação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <div id="message" style="margin-top: 15px; min-height: 24px;"></div>
+                <div id="historicoLog"></div>
+            </main>
+
+            <footer>
+                © 2025 YOUR COMPANY - TELEFÔNICA OPERATIONS
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        let clients = JSON.parse(localStorage.getItem('clients')) || [];
+        let editingPON = null;
+        let historico = JSON.parse(localStorage.getItem('clients_historico')) || [];
+        let backupInterval = null;
+
+        // =============== UTILITÁRIOS ===============
+        function validarCPF(cpf) {
+            cpf = cpf.replace(/[^\d]/g, '');
+            if (cpf.length !== 11) return false;
+            if (/^(\d)\1{10}$/.test(cpf)) return false;
+
+            let sum = 0;
+            for (let i = 0; i < 9; i++) sum += parseInt(cpf.charAt(i)) * (10 - i);
+            let rev = 11 - (sum % 11);
+            if (rev === 10 || rev === 11) rev = 0;
+            if (rev !== parseInt(cpf.charAt(9))) return false;
+
+            sum = 0;
+            for (let i = 0; i < 10; i++) sum += parseInt(cpf.charAt(i)) * (11 - i);
+            rev = 11 - (sum % 11);
+            if (rev === 10 || rev === 11) rev = 0;
+            if (rev !== parseInt(cpf.charAt(10))) return false;
+
+            return true;
+        }
+
+        function displayMessage(msg, type) {
+            const el = document.getElementById('message');
+            el.textContent = msg;
+            el.className = type === 'success' ? 'message-success' : 'message-error';
+        }
+
+        function setLoading(button, isLoading, originalText) {
+            if (isLoading) {
+                button.classList.add('btn-loading');
+                button.disabled = true;
+                button.textContent = 'Aguarde...';
+            } else {
+                button.classList.remove('btn-loading');
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('clientForm').reset();
+            editingPON = null;
+            document.querySelector('#clientForm .btn-cadastrar').textContent = 'Cadastrar';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+        }
+
+        // =============== HISTÓRICO ===============
+        function adicionarAoHistorico(acao) {
+            const entrada = `${new Date().toLocaleString('pt-BR')} - ${acao}`; // Armazena a data e a ação
+            historico.unshift(entrada);
+            historico = historico.slice(0, 10); // Mantém apenas as 10 últimas ações
+            localStorage.setItem('clients_historico', JSON.stringify(historico)); // Salva no localStorage
+            atualizarHistoricoUI(); // Atualiza a interface
+        }
+
+        // Função para agrupar histórico por data
+        function agruparHistoricoPorData() {
+            const historicoAgrupado = {};
+            historico.forEach(entry => {
+                const [data, acao] = entry.split(' - '); // Divide a data da ação
+                const dateKey = data.split(',')[0]; // Mantém apenas a data
+
+                // Agrupa ações por data
+                if (!historicoAgrupado[dateKey]) {
+                    historicoAgrupado[dateKey] = [];
+                }
+                historicoAgrupado[dateKey].push(acao); // Adiciona a ação ao grupo da sua data
+            });
+            return historicoAgrupado; // Retorna histórico agrupado
+        }
+
+        // Atualiza a interface do histórico na UI
+        function atualizarHistoricoUI() {
+            const div = document.getElementById('historicoLog');
+            const historicoAgrupado = agruparHistoricoPorData(); // Agrupa o histórico por data
+            const hoje = new Date().toLocaleDateString('pt-BR'); // Obtém a data atual formatada
+
+            let html = '<strong>Últimas ações:</strong><br>';
+
+            for (const [data, acoes] of Object.entries(historicoAgrupado)) {
+                const quantidadeAcoes = acoes.length; // Conta o número de ações
+                const estiloHoje = data === hoje ? 'style="color: green; font-weight: bold;"' : ''; // Destaque para hoje
+
+                html += `<strong ${estiloHoje}>${data} (${quantidadeAcoes} ação(s))</strong><br>${acoes.join('<br>')}<br>`; // Exibe as ações da data
+            }
+
+            div.innerHTML = html || 'Nenhuma ação registrada.'; // Atualiza a exibição
+        }
+
+        // =============== EXCLUSÃO ===============
+        function excluirCliente(pon) {
+            if (!confirm(`Deseja excluir o cliente com PON ${pon}?`)) return;
+            clients = clients.filter(c => c.pon !== pon);
+            localStorage.setItem('clients', JSON.stringify(clients));
+            resetForm();
+            displayClients();
+            displayMessage('Cliente excluído com sucesso!', 'success');
+            adicionarAoHistorico(`Excluído: ${pon}`);
+        }
+
+        // =============== EDIÇÃO ===============
+        function iniciarEdicao(pon) {
+            const client = clients.find(c => c.pon === pon);
+            if (!client) return;
+            document.getElementById('pon').value = client.pon;
+            document.getElementById('cpf').value = client.cpf;
+            document.getElementById('dataCriacao').value = client.dataCriacao;
+            editingPON = client.pon;
+            document.querySelector('#clientForm .btn-cadastrar').textContent = 'Atualizar';
+            document.getElementById('cancelEditBtn').style.display = 'inline-block';
+        }
+
+        // =============== EXIBIÇÃO DA LISTA ===============
+        function displayClients(filtered = clients) {
+            const tbody = document.querySelector('#clientList tbody');
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:12px;">Nenhum cliente encontrado.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(client => {
+                const tr = document.createElement('tr');
+                const isChecked = localStorage.getItem(`order-${client.pon}`) === 'true'; // Verifica o Local Storage
+
+                tr.innerHTML = `
+                <td>${client.pon}</td>
+                <td>${client.cpf}</td>
+                <td>${client.dataCriacao}</td>
+                <td>
+                <input type="checkbox" class="order-checkbox" id="order-${client.pon}" ${isChecked ? 'checked' : ''} onchange="toggleOrder('${client.pon}', this.checked)">
+                <label for="order-${client.pon}">OK</label>
+                <button class="main-button" style="padding:4px 8px; font-size:0.8em;" onclick="iniciarEdicao('${client.pon}')">
+                Editar
+                </button>
+                <span class="excluir-btn" aria-label="Excluir cliente ${client.pon}" onclick="excluirCliente('${client.pon}')">🗑️</span>
+                </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Função chamada quando o checkbox é alterado
+        function toggleOrder(pon, isChecked) {
+            localStorage.setItem(`order-${pon}`, isChecked); // Salva o estado no Local Storage
+            const message = isChecked ? `Ordem para o cliente ${pon} marcada como concluída.` : `Ordem para o cliente ${pon} desmarcada.`;
+            displayMessage(message, isChecked ? 'success' : 'info');
+        }
+
+        // Função para exibir mensagens
+        function displayMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = message;
+
+            // Altera a cor da mensagem com base no tipo
+            messageDiv.style.color = (type === 'success') ? 'green' : (type === 'info') ? 'blue' : 'red';
+
+            // Limpa a mensagem após 3 segundos
+            setTimeout(() => {
+                messageDiv.textContent = '';
+            }, 3000);
+        }
+
+        // =============== SUBMISSÃO ===============
+        document.getElementById('clientForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const pon = document.getElementById('pon').value.trim();
+            const cpf = document.getElementById('cpf').value.trim();
+            const dataCriacao = document.getElementById('dataCriacao').value.trim();
+
+            // Validação dos campos
+            if (!validarCPF(cpf)) {
+                return displayMessage('CPF inválido! Verifique o número.', 'error');
+            }
+
+            if (!pon || !dataCriacao) {
+                return displayMessage('PON e Data de Criação são obrigatórios.', 'error');
+            }
+
+            if (editingPON) {
+                // Atualiza as informações do cliente
+                clients = clients.map(c => c.pon === editingPON ? { pon, cpf, dataCriacao } : c);
+                adicionarAoHistorico(`Atualizado: ${pon}`);
+            } else {
+                // Verifica se já existe um cliente cadastrado com o mesmo PON
+                const clienteExistente = clients.find(c => c.pon === pon);
+
+                if (clienteExistente) {
+                    // Se já existe um cliente com o mesmo PON, verifica se a data é igual
+                    if (clienteExistente.dataCriacao === dataCriacao) {
+                        return displayMessage('Cliente já cadastrado com a mesma data!', 'error');
+                    }
+                }
+
+                // Adiciona novo cliente
+                clients.push({ pon, cpf, dataCriacao });
+                adicionarAoHistorico(`Cadastrado: ${pon}`);
+            }
+
+            // Salva os clientes no localStorage
+            try {
+                localStorage.setItem('clients', JSON.stringify(clients));
+                resetForm();
+                displayClients();
+                displayMessage(editingPON ? 'Atualizado com sucesso!' : 'Cadastrado com sucesso!', 'success');
+            } catch (error) {
+                displayMessage('Erro ao salvar os dados. Tente novamente.', 'error');
+                console.error('Erro ao salvar no localStorage:', error);
+            }
+        });
+
+        // =============== IMPORTAÇÃO ===============
+        document.getElementById('importBtn').addEventListener('click', () => {
+            document.getElementById('fileImport').click();
+        });
+
+        document.getElementById('fileImport').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            const btn = document.getElementById('importBtn');
+            const orig = btn.textContent;
+            setLoading(btn, true, orig);
+
+            reader.onload = function () {
+                try {
+                    const data = JSON.parse(reader.result);
+                    if (!Array.isArray(data)) throw new Error('Esperado um array.');
+                    const valid = data.filter(c => c.pon && c.cpf && c.dataCriacao);
+                    const novos = valid.filter(n => !clients.some(c => c.pon === n.pon));
+                    clients = [...clients, ...novos];
+                    localStorage.setItem('clients', JSON.stringify(clients));
+                    displayClients();
+                    displayMessage(`Importado(s): ${novos.length} cliente(s) novo(s)!`, 'success');
+                    adicionarAoHistorico(`Importados: ${novos.length} clientes`);
+                } catch (err) {
+                    displayMessage('Erro ao importar: ' + (err.message || 'Arquivo inválido'), 'error');
+                } finally {
+                    setLoading(btn, false, orig);
+                    e.target.value = '';
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        // =============== EXPORTAÇÃO ===============
+        document.getElementById('exportBtn').addEventListener('click', function () {
+            const btn = this;
+            const orig = btn.textContent;
+            setLoading(btn, true, orig);
+            setTimeout(() => {
+                const blob = new Blob([JSON.stringify(clients, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `clientes_${new Date().toISOString().slice(0, 10)}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                displayMessage('Exportado com sucesso!', 'success');
+                setLoading(btn, false, orig);
+            }, 200);
+        });
+
+        // =============== LIMPAR ===============
+        document.getElementById('clearBtn').addEventListener('click', function () {
+            if (confirm('Apagar todos os clientes? Esta ação não pode ser desfeita.')) {
+                const btn = this;
+                const orig = btn.textContent;
+                setLoading(btn, true, orig);
+                setTimeout(() => {
+                    localStorage.removeItem('clients');
+                    clients = [];
+                    resetForm();
+                    displayClients();
+                    displayMessage('Todos os dados foram apagados.', 'success');
+                    adicionarAoHistorico('Todos os clientes apagados');
+                    setLoading(btn, false, orig);
+                }, 300);
+            }
+        });
+
+        // =============== BUSCA ===============
+        function searchClient() {
+            const q = document.getElementById('search').value.toLowerCase();
+            const f = clients.filter(c =>
+                c.pon.toLowerCase().includes(q) ||
+                c.cpf.replace(/\D/g, '').includes(q.replace(/\D/g, ''))
+            );
+            displayClients(f);
+        }
+
+        // =============== MODO ACESSÍVEL ===============
+        function alternarModoAcessivel() {
+            document.body.classList.toggle('modo-acessivel');
+            localStorage.setItem('modoAcessivel', document.body.classList.contains('modo-acessivel'));
+        }
+        document.getElementById('toggleA11y').addEventListener('click', alternarModoAcessivel);
+
+        // =============== ATALHOS ===============
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                document.getElementById('clientForm').dispatchEvent(new Event('submit'));
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+                e.preventDefault();
+                resetForm();
+            }
+            if (e.key === 'Escape' && editingPON) {
+                resetForm();
+            }
+        });
+
+        // =============== BACKUP AUTOMÁTICO ===============
+        function criarBackup() {
+            const agora = new Date();
+            const ts = `${agora.getFullYear()}${String(agora.getMonth() + 1).padStart(2, '0')}${String(agora.getDate()).padStart(2, '0')}`;
+            localStorage.setItem(`clients_backup_${ts}`, JSON.stringify(clients));
+        }
+        function iniciarBackup() {
+            if (backupInterval) clearInterval(backupInterval);
+            backupInterval = setInterval(criarBackup, 5 * 60 * 1000); // a cada 5 min
+        }
+
+        // =============== INICIALIZAÇÃO ===============
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('modoAcessivel') === 'true') {
+                document.body.classList.add('modo-acessivel');
+            }
+            displayClients();
+            atualizarHistoricoUI();
+            iniciarBackup();
+            document.getElementById('pon').focus();
+        });
+
+        document.getElementById('btnContarPorData').addEventListener('click', function () {
+            const contagemPorData = contarOrdensPorData();
+            exibirResultado(contagemPorData);
+        });
+
+        function contarOrdensPorData() {
+            const contagem = {};
+            clients.forEach(client => {
+                const dataOriginal = client.dataCriacao; // Supondo que dataCriacao esteja no formato 'YYYY-MM-DD'
+
+                // Formata a data para o padrão brasileiro 'DD/MM/YYYY'
+                const [ano, mes, dia] = dataOriginal.split('-');
+                const dataFormatada = `${dia}/${mes}/${ano}`;
+
+                // Incrementa a contagem para a data formatada
+                contagem[dataFormatada] = (contagem[dataFormatada] || 0) + 1;
+            });
+            return contagem;
+        }
+
+        function exibirResultado(contagem) {
+            const resultadoDiv = document.getElementById('resultadoContagem');
+            resultadoDiv.innerHTML = ''; // Limpa resultados anteriores
+
+            const hoje = new Date().toLocaleDateString('pt-BR'); // Obtém a data atual formatada
+            const fragment = document.createDocumentFragment();
+
+            let totalOrdens = 0; // Contador total de ordens
+            let ordensDoDia = 0; // Contador de ordens do dia atual
+
+            // Filtra e exibe apenas as ordens do dia atual
+            for (const [data, total] of Object.entries(contagem)) {
+                if (data === hoje) {
+                    ordensDoDia = total; // Armazena o total de ordens do dia
+                    const paragrafo = document.createElement('p'); // Cria um novo parágrafo
+                    paragrafo.textContent = `Data: ${data} - Total de ordens: ${ordensDoDia}`; // Define o texto do parágrafo
+                    fragment.appendChild(paragrafo); // Adiciona o parágrafo ao fragment
+                }
+
+                totalOrdens += total; // Atualiza o contador total de ordens
+            }
+
+            // Verifica se há ordens do dia atual e exibe a contagem total
+            if (ordensDoDia > 0) {
+                const totalParagrafo = document.createElement('p');
+                totalParagrafo.textContent = `Total de ordens feitas: ${totalOrdens}`;
+                fragment.appendChild(totalParagrafo); // Adiciona o total ao fragment
+            } else {
+                // Caso não haja ordens para hoje
+                const avisoParagrafo = document.createElement('p');
+                avisoParagrafo.textContent = `Nenhuma ordem registrada para hoje.`;
+                fragment.appendChild(avisoParagrafo);
+                // Também exibindo o total de ordens feitas
+                const totalParagrafo = document.createElement('p');
+                totalParagrafo.textContent = `Total de ordens feitas: ${totalOrdens}`;
+                fragment.appendChild(totalParagrafo); // Adiciona o total ao fragment
+            }
+
+            resultadoDiv.appendChild(fragment); // Adiciona o fragmento ao resultadoDiv de uma vez
+        }
+        // =============== BUSCAR HISTÓRICO POR DATA ===============
+        document.getElementById('buscarBtn').addEventListener('click', function () {
+            const dataBuscada = document.getElementById('buscarData').value; // Obtem a data do campo de entrada
+            if (dataBuscada) {
+                const registrosFiltrados = buscarHistoricoPorData(dataBuscada);
+                exibirHistorico(registrosFiltrados);
+            } else {
+                displayMessage('Por favor, insira uma data.', 'error');
+            }
+        });
+
+        // Função para buscar registros do histórico por data
+        function buscarHistoricoPorData(data) {
+            const dataFormatada = new Date(data).toLocaleDateString('pt-BR'); // Formata a data para comparação
+            return historico.filter(entry => entry.startsWith(dataFormatada)); // Filtra os históricos que começam com a data
+        }
+
+        // Função para exibir os registros de histórico filtrados na interface
+        function exibirHistorico(registros) {
+            const div = document.getElementById('historicoLog');
+            if (registros.length > 0) {
+                div.innerHTML = '<strong>Histórico para data informada:</strong><br>' + registros.join('<br>');
+            } else {
+                div.innerHTML = 'Nenhuma ação registrada para a data informada.';
+            }
+        }
+
+    </script>
+
+    <script src="/assets/js/main.js"></script>
+</body>
+
+</html>
